@@ -24,15 +24,19 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
   <style>
     canvas,
     #video {
-      bottom: 60px;
-      right: 3px;
-      position: fixed;
-      z-index: 99999;
+      min-width: 100%;
+      max-width: 100%;
+    }
+
+    html {
+      scroll-behavior: smooth;
     }
   </style>
 </head>
 
-<body class="hold-transition sidebar-mini">
+<!-- <body class="hold-transition sidebar-mini"> -->
+
+<body class="sidebar-mini sidebar-collapse layout-fixed layout-navbar-fixed layout-footer-fixed">
   <div class="wrapper">
 
     <!-- Navbar -->
@@ -91,15 +95,9 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
               </a>
               <ul id="questionList" class="nav nav-treeview">
                 <li class="nav-item">
-                  <a href="#guidelines" class="nav-link active">
+                  <a href="#guidelines" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
                     <p>Guidelines</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="#" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Examination</p>
                   </a>
                 </li>
               </ul>
@@ -115,7 +113,7 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
     <div class="content-wrapper">
       <!-- Content Header (Page header) -->
       <div class="content-header">
-        <div class="container-fluid">
+        <div id="guidelines" class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-6">
               <h1 class="m-0 text-dark">Welcome, {User}</h1>
@@ -136,15 +134,24 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
         <div class="container-fluid">
           <div id="questions" class="row">
             <div class="col-lg-12">
-              <div id="guidelines" class="card">
+              <div class="card">
                 <div class="card-header">
-                  <h5 class="m-0">Guidelines</h5>
+                  <h5 class="m-0">Guidelines for the Examination</h5>
                 </div>
                 <div class="card-body">
-                  <h6 class="card-title">Special title treatment</h6>
+                  <h6 class="card-title">In case you fail to adhere to the following guidelines, your attempt for this
+                    examination would be discarded. Kindly read and follow the points sincerely.</h6><br /><br />
+                  <h6 class="card-title">Proctored Examination Guideline:</h6>
 
-                  <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                  <a href="#" class="btn btn-primary">Go somewhere</a>
+
+                  <p class="card-text">
+                    1. You will be responsible for ensuring proper lighting so that your face is visible in the
+                    webcam.
+                  </p>
+
+                  <p style="min-width:100%;text-align:center;"><a href="#" class="btn btn-danger"><b>Start
+                        Examination</b></a>
+                  </p>
                 </div>
               </div>
             </div>
@@ -161,13 +168,17 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
     <aside class="control-sidebar control-sidebar-dark">
       <!-- Control sidebar content goes here -->
       <div class="p-3">
-        <h5>Support Contact</h5>
+        <h5>Important Contacts</h5>
         <p id="support">
+          Teacher:<br />
+          <a href="tel:123-456-7890">Dr. Anoop Mishra</a><br />
           Coordinator: <br />
-          Teacher: +91-8888999989
+          <a href="tel:123-456-7890">Dr. Anoop Mishra</a><br />
         </p>
       </div>
-      <div class="p-3">
+      <div id="proctor" class="p-3">
+        <!-- Video Feed Box -->
+        <video id="video" autoplay muted></video>
         <h5>Proctor Logs</h5>
         <p id="warning"></p>
       </div>
@@ -175,17 +186,13 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
     <!-- /.control-sidebar -->
 
     <!-- Main Footer -->
-    <footer class="main-footer">
+    <footer class="main-footer" style="text-align:center;">
       <!-- Default to the left -->
-      <strong>&copy; {2020} <a href="https://e-edport.com">e-EdPort</a>.</strong> All rights reserved.
+      <span id="status"></span>
       <!-- To the right -->
-      <input id="log" style="min-width:360px;" value="Connecting with a proctor..."
-        class="float-right d-none d-sm-inline">
+      <input id="log" value="Connecting with a proctor..." class="float-right d-none d-sm-inline">
     </footer>
   </div>
-  <!-- Video Feed Box -->
-  <video style="border-style: outset; border-width:1px; border-color: dimgray;" id="video" width="162" height="122"
-    autoplay muted></video>
 
   <!-- ./wrapper -->
 
@@ -218,6 +225,82 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
         question: "Which of these is also known as the God's own land?",
         options: ["Kashmir", "Kerala", "Varanasi", "Indore"]
       },
+      {
+        question: "Which of these is also known as the God's own land?",
+        options: ["Kashmir", "Kerala", "Varanasi", "Indore"]
+      },
+      {
+        question: "Which of these is also known as the God's own land?",
+        options: ["Kashmir", "Kerala", "Varanasi", "Indore"]
+      },
+      {
+        question: "Which of these is also known as the God's own land?",
+        options: ["Kashmir", "Kerala", "Varanasi", "Indore"]
+      },
+      {
+        question: "Which of these is also known as the God's own land?",
+        options: ["Kashmir", "Kerala", "Varanasi", "Indore"]
+      },
+      {
+        question: "Which of these is also known as the God's own land?",
+        options: ["Kashmir", "Kerala", "Varanasi", "Indore"]
+      },
+      {
+        question: "Which of these is also known as the God's own land?",
+        options: ["Kashmir", "Kerala", "Varanasi", "Indore"]
+      },
+      {
+        question: "Which of these is also known as the God's own land?",
+        options: ["Kashmir", "Kerala", "Varanasi", "Indore"]
+      },
+      {
+        question: "Which of these is also known as the God's own land?",
+        options: ["Kashmir", "Kerala", "Varanasi", "Indore"]
+      },
+      {
+        question: "Which of these is also known as the God's own land?",
+        options: ["Kashmir", "Kerala", "Varanasi", "Indore"]
+      },
+      {
+        question: "Which of these is also known as the God's own land?",
+        options: ["Kashmir", "Kerala", "Varanasi", "Indore"]
+      },
+      {
+        question: "Which of these is also known as the God's own land?",
+        options: ["Kashmir", "Kerala", "Varanasi", "Indore"]
+      },
+      {
+        question: "Which of these is also known as the God's own land?",
+        options: ["Kashmir", "Kerala", "Varanasi", "Indore"]
+      },
+      {
+        question: "Which of these is also known as the God's own land?",
+        options: ["Kashmir", "Kerala", "Varanasi", "Indore"]
+      },
+      {
+        question: "Which of these is also known as the God's own land?",
+        options: ["Kashmir", "Kerala", "Varanasi", "Indore"]
+      },
+      {
+        question: "Which of these is also known as the God's own land?",
+        options: ["Kashmir", "Kerala", "Varanasi", "Indore"]
+      },
+      {
+        question: "Which of these is also known as the God's own land?",
+        options: ["Kashmir", "Kerala", "Varanasi", "Indore"]
+      },
+      {
+        question: "Which of these is also known as the God's own land?",
+        options: ["Kashmir", "Kerala", "Varanasi", "Indore"]
+      },
+      {
+        question: "Which of these is also known as the God's own land?",
+        options: ["Kashmir", "Kerala", "Varanasi", "Indore"]
+      },
+      {
+        question: "Which of these is also known as the God's own land?",
+        options: ["Kashmir", "Kerala", "Varanasi", "Indore"]
+      },
     ]
 
     function populateOptions(o) {
@@ -227,11 +310,11 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
     qc = 0
     function displayQuestion(q) {
       ++qc
-      $('#questions').append('<div class="col-lg-12"><div id="q' + qc + '" class="card"></div></div>')
+      $('#questions').append('<div id="question' + qc + '" style="padding-top:60px;" class="col-lg-12"><div id="q' + qc + '" class="card"></div></div>')
       $('#q' + qc).append('<div class="card-header"><h5 class="m-0">Question ' + qc + '</h5></div>')
       $('#q' + qc).append('<div id="q' + qc + '_body" class="card-body"><h6 class= "card-title">' + q.question + '</h6><br/></div>')
       q.options.forEach(populateOptions)
-      $('#questionList').append('<li class="nav-item"><a href="#q' + qc + '" class="nav-link"><i class="far fa-circle nav-icon"></i><p>Question ' + qc + '</p></a></li>')
+      $('#questionList').append('<li class="nav-item"><a href="#question' + qc + '" class="nav-link"><i class="far fa-circle nav-icon"></i><p>Question ' + qc + '</p></a></li>')
     }
     data.forEach(displayQuestion);
 
