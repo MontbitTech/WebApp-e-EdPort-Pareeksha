@@ -28,19 +28,19 @@ function proctorScene(detections) {
     if (peopleCounts.every(isNotAlone)) {
         message = 'Please be alone while giving exam.'
         proctorLog('not alone: ' + peopleCount)
-        $('#log').text(message)
+        $('#status').text(message)
         proctorSpeak(message)
     }
     else if (peopleCounts.every(isNotVisible)) {
         message = 'I can\'t see you. Please remain in front of your screen while giving exam.'
         proctorLog('not visible')
-        $('#log').text(message)
+        $('#status').text(message)
         proctorSpeak(message)
     }
     else if (peopleCounts.every(isAloneVisible)) {
-        $('#log').text('')
+        $('#status').text('')
         var studentMood = detections[0]['expressions'];
-        $('#log').text(studentMood)
+        $('#status').text(studentMood)
     }
 }
 
@@ -66,7 +66,7 @@ function keydown(evt) {
     if (evt) {
         proctorLog('keyboard used')
         message = "Don't use keyboard while giving exam!"
-        $('#log').text(message)
+        $('#status').text(message)
         proctorSpeak(message)
     }
 }
