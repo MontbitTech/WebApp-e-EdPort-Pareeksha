@@ -26,10 +26,9 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
     #video {
       min-width: 100%;
       max-width: 100%;
-    }
-
-    html {
-      scroll-behavior: smooth;
+      border-radius: 5px;
+      border-color: whitesmoke;
+      border-style: solid;
     }
   </style>
 </head>
@@ -82,7 +81,8 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
 
         <!-- Sidebar Menu -->
         <nav class="mt-2">
-          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false"
+            style="font-size:smaller">
             <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
             <li class="nav-item has-treeview menu-open">
@@ -96,8 +96,8 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
               <ul id="questionList" class="nav nav-treeview">
                 <li class="nav-item">
                   <a href="#guidelines" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Guidelines</p>
+                    <i class="far fa-circle fa-sm"></i>
+                    <p> Guidelines</p>
                   </a>
                 </li>
               </ul>
@@ -149,7 +149,8 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
                     webcam.
                   </p>
 
-                  <p style="min-width:100%;text-align:center;"><a href="#" class="btn btn-danger"><b>Start
+                  <p style="min-width:100%;text-align:center;"><a href="#" onclick="toggleFullscreen()"
+                      class="btn btn-danger"><b>Start
                         Examination</b></a>
                   </p>
                 </div>
@@ -167,19 +168,10 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
     <!-- Control Sidebar -->
     <aside class="control-sidebar control-sidebar-dark">
       <!-- Control sidebar content goes here -->
-      <div class="p-3">
-        <h5>Important Contacts</h5>
-        <p id="support">
-          Teacher:<br />
-          <a href="tel:123-456-7890">Dr. Anoop Mishra</a><br />
-          Coordinator: <br />
-          <a href="tel:123-456-7890">Dr. Anoop Mishra</a><br />
-        </p>
-      </div>
       <div id="proctor" class="p-3">
         <!-- Video Feed Box -->
         <video id="video" autoplay muted></video>
-        <h5>Proctor Logs</h5>
+        <h5><small><b>PROCTOR NOTES:</b></small></h5>
         <p id="warning"></p>
       </div>
     </aside>
@@ -189,8 +181,6 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
     <footer class="main-footer" style="text-align:center;">
       <!-- Default to the left -->
       <span id="status"></span>
-      <!-- To the right -->
-      <input id="log" value="Connecting with a proctor..." class="float-right d-none d-sm-inline">
     </footer>
   </div>
 
@@ -314,7 +304,7 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
       $('#q' + qc).append('<div class="card-header"><h5 class="m-0">Question ' + qc + '</h5></div>')
       $('#q' + qc).append('<div id="q' + qc + '_body" class="card-body"><h6 class= "card-title">' + q.question + '</h6><br/></div>')
       q.options.forEach(populateOptions)
-      $('#questionList').append('<li class="nav-item"><a href="#question' + qc + '" class="nav-link"><i class="far fa-circle nav-icon"></i><p>Question ' + qc + '</p></a></li>')
+      $('#questionList').append('<li class="nav-item"><a href="#question' + qc + '" class="nav-link"><i class="far fa-circle fa-sm"></i><p>&nbsp;Question ' + qc + '</p></a></li>')
     }
     data.forEach(displayQuestion);
 

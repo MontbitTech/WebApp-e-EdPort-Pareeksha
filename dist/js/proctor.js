@@ -28,20 +28,45 @@ function proctorScene(detections) {
     if (peopleCounts.every(isNotAlone)) {
         message = 'Please be alone while giving exam.'
         proctorLog('not alone: ' + peopleCount)
-        $('#log').val(message)
+        $('#log').text(message)
         proctorSpeak(message)
     }
     else if (peopleCounts.every(isNotVisible)) {
         message = 'I can\'t see you. Please remain in front of your screen while giving exam.'
         proctorLog('not visible')
-        $('#log').val(message)
+        $('#log').text(message)
         proctorSpeak(message)
     }
     else if (peopleCounts.every(isAloneVisible)) {
-        $('#log').val('')
+        $('#log').text('')
         var studentMood = detections[0]['expressions'];
-        $('#log').val(studentMood)
+        $('#log').text(studentMood)
     }
+}
 
+document.addEventListener('fullscreenchange', (event) => {
+    if (document.fullscreenElement) {
+        console.log(`Element: ${document.fullscreenElement.id} entered full-screen mode.`);
+    } else {
+        alert('Do you want to exit the exam?');
+    }
+});
 
+$(window).focus(function () {
+    //do something
+});
+
+$(window).blur(function () {
+    alert('You are not allowed to leave this tab while giving examination!')
+});
+
+// Disable keyboard
+document.onkeydown = keydown;
+function keydown(evt) {
+    if (evt) {
+        proctorLog('keyboard used')
+        message = "Don't use keyboard while giving exam!"
+        $('#log').text(message)
+        proctorSpeak(message)
+    }
 }
