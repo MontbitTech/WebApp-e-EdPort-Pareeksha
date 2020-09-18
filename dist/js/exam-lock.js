@@ -1,13 +1,6 @@
 // Disable text selection
-$("body").attr("onmousedown", "return false");
-$("body").attr("onselectstart", "return false");
-
-// $("body").attr("onCopy", "return false");
-// $("body").attr("onCut", "return false");
-// $("body").attr("onpaste", "return false");
-// $("body").attr("onDrag", "return false");
-// $("body").attr("onDrop", "return false");
-// $("body").attr("autocomplete", "off");
+//$("body").attr("onmousedown", "return false");
+//$("body").attr("onselectstart", "return false");
 
 // Switch to full screen
 fullscreen = false
