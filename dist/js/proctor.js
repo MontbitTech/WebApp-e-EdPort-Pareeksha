@@ -1,4 +1,46 @@
-var peopleCounts = new Array(10);
+const video = document.getElementById('video')
+const isNotAlone = (currentValue) => currentValue > 1
+const isNotVisible = (currentValue) => currentValue < 1
+const isAloneVisible = (currentValue) => currentValue == 1
+var peopleCounts = [1, 1, 1, 1, 1]
+var sliceCount = 0
+
+Promise.all([
+    faceapi.nets.tinyFaceDetector.loadFromUri('dist/js/models'),
+    faceapi.nets.faceLandmark68Net.loadFromUri('dist/js/models'),
+    faceapi.nets.faceRecognitionNet.loadFromUri('dist/js/models'),
+    faceapi.nets.faceExpressionNet.loadFromUri('dist/js/models')
+]).then(startVideo)
+
+function startVideo() {
+    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+    if (navigator.getUserMedia) {
+        navigator.getUserMedia({ audio: false, video: true },
+            function (stream) {
+                video.srcObject = stream;
+                video.onloadedmetadata = function (e) {
+                    video.play();
+                };
+            },
+            function (err) {
+                console.log("ERROR: The following error occurred: " + err.name);
+            }
+        );
+    } else {
+        console.log("ERROR: getUserMedia not supported, try another device and give all necessary permissions.");
+    }
+}
+
+// Connect with proctor as exam starts
+function connectProctor() {
+    if (userVideoTracking) {
+        setInterval(async () => {
+            const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions()
+            proctorScene(detections)
+            console.log(peopleCounts)
+        }, 3000)
+    }
+}
 
 function proctorSpeak(message) {
     var message = new SpeechSynthesisUtterance(message)
@@ -11,62 +53,87 @@ function proctorLog(message) {
     $('#warning').html(warning)
 }
 
-const isNotAlone = (currentValue) => currentValue > 1
-const isNotVisible = (currentValue) => currentValue < 1
-const isAloneVisible = (currentValue) => currentValue == 1
-
+// AI assisted proctor monitoring
 function proctorScene(detections) {
     var peopleCount = detections.length
     var studentMood = ''
     var message = ''
+
+    // Visual feedback if user not visible or not alone
+    if (peopleCount == 1) { $('#video').css('border-color', 'whitesmoke') }
+    else { $('#video').css('border-color', 'red'); sliceCount -= 1 }
 
     // Update the buffer array
     peopleCounts.unshift(peopleCount)
     peopleCounts.pop()
 
     // The student must give the exam alone and he must be present in front of the screen
-    if (peopleCounts.every(isNotAlone)) {
+    if (peopleCounts.slice(sliceCount).every(isNotAlone)) {
+        sliceCount = 0
         message = 'Please be alone while giving exam.'
         proctorLog('not alone: ' + peopleCount)
         $('#status').text(message)
         proctorSpeak(message)
+
+        --userNotAloneWarningCount
+        if (userNotAloneWarningCount <= 0) {
+            examTerminated = true
+            examTerminationReason += 'Not alone'
+            // TODO: End Exam
+        }
+        else {
+            // Proctor Warning
+            // Display Warning
+            // Pause Exam
+            var res = prompt("Your exam is paused. Want to resume?")
+        }
     }
-    else if (peopleCounts.every(isNotVisible)) {
+    else if (peopleCounts.slice(sliceCount).every(isNotVisible)) {
+        console.log(sliceCount)
+        sliceCount = 0
         message = 'I can\'t see you. Please remain in front of your screen while giving exam.'
         proctorLog('not visible')
         $('#status').text(message)
         proctorSpeak(message)
+
+        --userNotVisibleWarningCount
+        if (userNotVisibleWarningCount <= 0) {
+            examTerminated = true
+            examTerminationReason += 'Not visible'
+            // TODO: End Exam
+        }
+        else {
+            // Proctor Warning
+            // Display Warning
+            // Pause Exam
+            var res = prompt("Your exam is paused. Want to resume?")
+        }
     }
-    else if (peopleCounts.every(isAloneVisible)) {
-        $('#status').text('')
-        var studentMood = detections[0]['expressions'];
-        $('#status').text(studentMood)
+    else if (peopleCount == 1) {
+        console.log(detections)
+        $('#status').html(
+            emojiFromExpression(detections[0]['expressions'])
+        )
     }
 }
 
-document.addEventListener('fullscreenchange', (event) => {
-    if (document.fullscreenElement) {
-        console.log(`Element: ${document.fullscreenElement.id} entered full-screen mode.`);
-    } else {
-        alert('Do you want to exit the exam?');
+function emojiFromExpression(expression) {
+    e = sortByValue(expression)[0][1]
+    if (e == 'angry') {
+        return '<i class="far fa-2x fa-angry"></i>'
     }
-});
+    if (e == 'disgusted') { return '<i class="far fa-2x fa-frown-open"></i>' }
+    if (e == 'fearful') { return '<i class="far fa-2x fa-flushed"></i>' }
+    if (e == 'happy') { return '<i class="far fa-2x fa-laugh"></i>' }
+    if (e == 'neutral') { return '<i class="far fa-2x fa-meh"></i>' }
+    if (e == 'sad') { return '<i class="far fa-2x fa-sad-tear"></i>' }
+    if (e == 'surprised') { return '<i class="far fa-2x fa-surprise"></i>' }
+}
 
-$(window).focus(function () {
-    //do something
-});
-
-$(window).blur(function () {
-    alert('You are not allowed to leave this tab while giving examination!')
-});
-
-// Disable keyboard
-document.onkeydown = keydown;
-function keydown(evt) {
-    if (evt) {
-        proctorLog('keyboard used')
-        message = "Don't use keyboard while giving exam!"
-        $('#status').text(message)
-        proctorSpeak(message)
+function sortByValue(jsObj) {
+    var sortedArray = [];
+    for (var i in jsObj) {
+        sortedArray.push([jsObj[i], i]);
     }
+    return sortedArray.sort();
 }
