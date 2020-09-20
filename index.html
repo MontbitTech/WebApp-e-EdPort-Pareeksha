@@ -41,11 +41,17 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
       position: fixed;
       overflow: auto;
     }
+
+    #pauseExam {
+      width: 100vw;
+      height: 100vh;
+      top: 0;
+      left: 0;
+    }
   </style>
 </head>
 
-<body onselectstart="return false"
-  class="sidebar-mini sidebar-collapse layout-fixed layout-navbar-fixed layout-footer-fixed">
+<body onselectstart="return false" class="sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
   <div class="wrapper">
 
     <!-- Navbar -->
@@ -60,8 +66,8 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
       <ul class="navbar-nav ml-auto">
         <div style="font-size: 1.5rem;" id="timer"></div>
         <li class="nav-item">
-          <a id="toggle_sidebar" class="nav-link" data-widget="control-sidebar" data-slide="true" href="#"
-            role="button">
+          <a id="toggle_sidebar" class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button"
+            title="View Proctor Logs">
             <i class="fas fa-headset fa-lg"></i>
           </a>
         </li>
@@ -180,12 +186,32 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
 
     <!-- Main Footer -->
     <footer class="main-footer" style="text-align:center;">
-      <!-- Default to the left -->
       <span id="status"></span>
     </footer>
   </div>
 
   <!-- ./wrapper -->
+
+  <!-- Exam Pause -->
+  <div class="modal fade" id="pauseExam">
+    <div class="modal-dialog">
+      <div class="modal-content bg-secondary">
+        <div class="modal-header">
+          <h4 class="modal-title">Warning Heading</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true"></span></button>
+        </div>
+        <div class="modal-body">
+          <p>Warning body…</p>
+        </div>
+        <div class="modal-footer justify-content-center">
+          <button type="button" onclick=resumeExam() class="btn btn-outline-light" data-dismiss="modal">Accept</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
 
   <!-- REQUIRED SCRIPTS -->
 

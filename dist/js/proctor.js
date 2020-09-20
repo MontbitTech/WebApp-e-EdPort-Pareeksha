@@ -3,8 +3,7 @@ const video = document.getElementById('video')
 const isNotAlone = (currentValue) => currentValue > 1
 const isNotVisible = (currentValue) => currentValue < 1
 const isAloneVisible = (currentValue) => currentValue == 1
-var peopleCounts = [1, 1, 1, 1, 1, 1]
-var sliceCount = 0
+var peopleCounts = [1, 1, 1, 1, 1, 1, 1, 1]
 var examLog = []
 var elapsedTime = 0
 
@@ -15,6 +14,7 @@ Promise.all([
     faceapi.nets.faceExpressionNet.loadFromUri('dist/js/models')
 ]).then(startVideo)
 
+// Start webcam video stream
 function startVideo() {
     navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
     if (navigator.getUserMedia) {
@@ -40,15 +40,17 @@ function connectProctor() {
         setInterval(async () => {
             const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions()
             proctorScene(detections)
-        }, 3000)
+        }, 2000)
     }
 }
 
-function proctorSpeak(message) {
-    var message = new SpeechSynthesisUtterance(message)
+// Audio feedback for warnings
+function proctorSpeak(warningCode) {
+    var message = new SpeechSynthesisUtterance(warningCode)
     window.speechSynthesis.speak(message)
 }
 
+// Logging user details
 function proctorLog(message) {
     var hh = Math.floor(elapsedTime / 60 / 60) % 24
     var mm = Math.floor(elapsedTime / 60) % 60
@@ -65,15 +67,14 @@ function proctorScene(detections) {
 
     // Visual feedback if user not visible or not alone
     if (peopleCount == 1) { $('#video').css('border-color', 'whitesmoke') }
-    else { $('#video').css('border-color', 'red'); sliceCount -= 1 }
+    else { $('#video').css('border-color', 'red'); }
 
     // Update the buffer array
     peopleCounts.unshift(peopleCount)
     peopleCounts.pop()
 
     // The student must give the exam alone and he must be present in front of the screen
-    if (peopleCounts.slice(sliceCount).every(isNotAlone)) {
-        sliceCount = 0
+    if (peopleCounts.every(isNotAlone)) {
         message = 'Please be alone while giving exam.'
         proctorLog('not alone: ' + peopleCount)
         $('#status').text(message)
@@ -92,8 +93,7 @@ function proctorScene(detections) {
             var res = prompt("Your exam is paused. Want to resume?")
         }
     }
-    else if (peopleCounts.slice(sliceCount).every(isNotVisible)) {
-        sliceCount = 0
+    else if (peopleCounts.every(isNotVisible)) {
         message = 'I can\'t see you. Please remain in front of your screen while giving exam.'
         proctorLog('not visible')
         $('#status').text(message)

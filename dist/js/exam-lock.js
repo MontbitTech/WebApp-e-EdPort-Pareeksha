@@ -117,14 +117,16 @@ function gotoFullScreen() {
 function monitorFullScreen() {
     document.addEventListener('fullscreenchange', (event) => {
         if (!document.fullscreenElement) {
-            --fullScreenExitAttempts
             if (fullScreenExitAttempts <= 0) {
                 examTerminated = true
                 examTerminationReason += 'Closed full screen'
                 // TODO: End Exam
+                window.location.replace("");
             }
             else {
                 // Display Warning
+                pauseExam()
+                --fullScreenExitAttempts
             }
         }
     })
@@ -134,15 +136,17 @@ function monitorFullScreen() {
 function trackSwitchTabApplication() {
     $(window).blur(function () {
         --multitaskingAttempts
-        if (fullScreenExitAttempts <= 0) {
+        if (multitaskingAttempts <= 0) {
             examTerminated = true
             examTerminationReason += 'Switched tab/browser'
             // TODO: End Exam
+            window.location.replace("");
         }
         else {
             // Proctor Warning
             // Display Warning
             // Pause Exam
+            pauseExam()
         }
     })
 }
@@ -171,7 +175,7 @@ function trackRightClick() {
 function displayQuestion(q) {
     ++qc
     $('#questions').append('<div id="question' + qc + '" style="padding-top:60px;" class="col-lg-12"><div id="q' + qc + '" class="card"></div></div>')
-    $('#q' + qc).append('<div class="card-header"><h3 class="card-title">Question ' + qc + '</h3><div class="card-tools"><button type="button" onclick="toggleFlag(this)" class="btn btn-tool"><i class="fas fa-flag"></i></button></div ></div>')
+    $('#q' + qc).append('<div class="card-header"><h3 class="card-title">Question ' + qc + '</h3><div class="card-tools"><button id="q' + qc + '_flag" type="button" onclick="toggleFlag(' + qc + ')" class="btn btn-tool"><i class="fas fa-flag"> Flag</i></button><button id="q' + qc + '_checked" type="button" onclick="toggleChecked(' + qc + ')" class="btn btn-tool"><i class="fas fa-check-double"> Checked</i></button></div ></div>')
     $('#q' + qc).append('<div id="q' + qc + '_body" class="card-body"><h6 class= "card-title">' + q.question + '</h6><br/><br/></div>')
     q.options.forEach(populateOptions)
     $('#questionList').append('<li class="nav-item"><a href="#question' + qc + '" class="nav-link"><i id="question' + qc + '_button" class="far fa-circle text-warning fa-sm nav-icon"></i><p>&nbsp;Question ' + qc + '</p></a></li>')
@@ -183,14 +187,28 @@ function populateOptions(o) {
 }
 
 // Toggle flag for questions
-function toggleFlag(e) {
-    if ($(e).children().hasClass('text-danger')) {
-        $(e).children('.fa-flag').removeClass('text-danger')
-        $('#' + $(e).closest('.col-lg-12').attr('id') + '_button').removeClass('text-danger fa-flag').addClass('fa-circle text-warning')
+function toggleFlag(qn) {
+    if ($('#q' + qn + '_checked').children('.fa-check-double').hasClass('text-success')) { toggleChecked(qn) }
+    if ($('#q' + qn + '_flag').children('.fa-flag').hasClass('text-danger')) {
+        $('#q' + qn + '_flag').children('.fa-flag').removeClass('text-danger')
+        $('#question' + qn + '_button').removeClass('text-danger fa-flag').addClass('text-warning fa-circle')
     }
     else {
-        $(e).children('.fa-flag').addClass('text-danger')
-        $('#' + $(e).closest('.col-lg-12').attr('id') + '_button').removeClass('fa-circle text-warning text-success text-danger').addClass('text-danger fa-flag')
+        $('#q' + qn + '_flag').children('.fa-flag').addClass('text-danger')
+        $('#question' + qn + '_button').removeClass('text-warning fa-circle').addClass('text-danger fa-flag')
+    }
+}
+
+// Toggle checked for questions
+function toggleChecked(qn) {
+    if ($('#q' + qn + '_flag').children('.fa-flag').hasClass('text-danger')) { toggleFlag(qn) }
+    if ($('#q' + qn + '_checked').children('.fa-check-double').hasClass('text-success')) {
+        $('#q' + qn + '_checked').children('.fa-check-double').removeClass('text-success')
+        $('#question' + qn + '_button').removeClass('text-danger fa-check-circle').addClass('text-warning fa-circle')
+    }
+    else {
+        $('#q' + qn + '_checked').children('.fa-check-double').addClass('text-success')
+        $('#question' + qn + '_button').removeClass('text-warning fa-circle').addClass('text-success fa-check-circle')
     }
 }
 
@@ -198,7 +216,7 @@ function toggleFlag(e) {
 function startExam() {
     // Prepare environment
     $('#start_exam_button').remove()
-    $('#guidelines_button').removeClass('fa-circle').addClass('text-success fa-check-circle')
+    $('#guidelines_button').removeClass('fa-circle').addClass('text-info fa-check-circle')
     if (userVideoTracking) { connectProctor(); $('#status').text('Connecting with a proctor...') }
     if (keepFullScreen) { gotoFullScreen() }
     if (blockMultitasking) { trackSwitchTabApplication() }
@@ -210,6 +228,18 @@ function startExam() {
 
     // Start timer
     if (timeBound) { startTimer() }
+}
+
+function pauseExam() {
+    // Prepare environment
+    $('#pauseExam').modal({ backdrop: 'static', keyboard: false })
+    $("#pauseExam").modal('show');
+}
+
+function resumeExam() {
+    // Prepare environment
+    gotoFullScreen()
+    $('#pauseExam').hide()
 }
 
 function terminateExam() {
