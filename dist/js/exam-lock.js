@@ -8,7 +8,7 @@ var keepFullScreen = true
 var fullScreenExitAttempts = 3
 
 // Multitasking while giving exam
-var allowMultitasking = false
+var blockMultitasking = true
 var multitaskingAttempts = 3
 
 // Capture and save user image while giving exam
@@ -24,14 +24,72 @@ var userAudioTracking = true
 var userAudioWarningCount = 3
 
 // Keyboard usage while giving exam
-var allowKeyboard = false
+var blockKeyboard = true
 
 // Right click usage while giving exam
-var allowRightClick = false
+var blockRightClick = true
 
+// Time bound exam
+var timeBound = true
 
 // Proctor Speech Dictionary
 // TODO: Make list of all warnings in 'hindi' and 'english'
+var d = [{
+    'hindi': [{
+        'fullScreenWarning': [{
+            1: 'full screen se bahar na jaayein',
+            2: 'exam dete waqt full screen zaroori h',
+            3: 'kripya exam dete waqt full screen mode me rahein'
+        }],
+        'multitaskingWarning': [{
+            1: 'exam dete waqt multitasking naa karein',
+            2: 'kripya tab athwa application naa badlein',
+            3: 'sirf exam pe focus karein'
+        }],
+        'userNotAloneWarning': [{
+            1: 'exam dete waqt akele rahein',
+            2: 'kripya exam me kisi ki madad na len',
+            3: 'exam dete wat kisi aur ke saath na rahein'
+        }],
+        'userNotVisibleWarning': [{
+            1: 'exam dete waqt hamesha camera ke saamne rahein',
+            2: 'kripya camera ke saamne rahein aur proper light me rahein',
+            3: 'camera ke saamne rahein'
+        }],
+        'userAudioWarning': [{
+            1: 'kripya shanti banaye rahein',
+            2: 'exam dete waqt aawaaz na karein',
+            3: 'shhhh! shanti banaye rakhein!'
+        }],
+    }],
+    'english': [{
+        'fullScreenWarning': [{
+            1: 'do not exit the full screen',
+            2: 'remain in full screen while giving exam',
+            3: 'please do not switch from full screen mode while giving exam'
+        }],
+        'multitaskingWarning': [{
+            1: 'avoid multitasking while giving exam',
+            2: 'kindly do not switch tabs or applications',
+            3: 'focus only on your exam'
+        }],
+        'userNotAloneWarning': [{
+            1: 'remain alone while giving exam',
+            2: 'kindly do not involve others in your exam',
+            3: 'stay alone while you are giving exam'
+        }],
+        'userNotVisibleWarning': [{
+            1: 'always stay in front of camera while giving exam',
+            2: 'please stay in front of camera and ensure proper lighting',
+            3: 'remain in front of the camera'
+        }],
+        'userAudioWarning': [{
+            1: 'please stay quiet',
+            2: 'do not make noise while giving exam',
+            3: 'shhhh! remain quiet!'
+        }],
+    }]
+}]
 
 // System compatibility test
 var systemIncompatible = false
@@ -41,72 +99,74 @@ var systemIncompatibleReason = ''
 var examTerminated = false
 var examTerminationReason = ''
 
-// Global Variables for Functions
+// Global Variables
 var qc = 0
 
 // Switch to full screen if defined by examiner
 function gotoFullScreen() {
-    if (!document.fullscreenElement && keepFullScreen) {
+    if (!document.fullscreenElement) {
         document.querySelector("body").requestFullscreen().catch(err => {
             systemCompatible = false
             systemIncompatibleReason += 'Error attempting to enable full-screen mode: ${err.message} (${err.name})'
         })
+        monitorFullScreen()
     }
 }
 
-document.addEventListener('fullscreenchange', (event) => {
-    if (!document.fullscreenElement) {
-        --fullScreenAttempts
+// Track switching of full screen
+function monitorFullScreen() {
+    document.addEventListener('fullscreenchange', (event) => {
+        if (!document.fullscreenElement) {
+            --fullScreenExitAttempts
+            if (fullScreenExitAttempts <= 0) {
+                examTerminated = true
+                examTerminationReason += 'Closed full screen'
+                // TODO: End Exam
+            }
+            else {
+                // Display Warning
+            }
+        }
+    })
+}
+
+//Track switching of tab/application
+function trackSwitchTabApplication() {
+    $(window).blur(function () {
+        --multitaskingAttempts
         if (fullScreenExitAttempts <= 0) {
             examTerminated = true
-            examTerminationReason += 'Closed full screen'
+            examTerminationReason += 'Switched tab/browser'
             // TODO: End Exam
         }
         else {
+            // Proctor Warning
             // Display Warning
+            // Pause Exam
         }
-    }
-})
+    })
+}
 
-$(window).blur(function () {
-    --multitaskingAttempts
-    if (fullScreenExitAttempts <= 0) {
-        examTerminated = true
-        examTerminationReason += 'Switched tab/browser'
-        // TODO: End Exam
-    }
-    else {
-        // Proctor Warning
-        // Display Warning
-        // Pause Exam
-    }
-})
-
-// Disable Keyboard
-document.addEventListener("keydown", function (e) {
-    proctorLog('keyboard used')
-    message = "Don't use keyboard while giving exam!"
-    $('#status').text(message)
-    e.preventDefault()
-})
-
-// Disable Right Click
-$(document).bind("contextmenu", function (e) {
-    if (!allowRightClick) {
-        proctorLog('right click used')
-        message = "Don't use right click while giving exam!"
+// Track Keyboard usage
+function trackKeyboard() {
+    document.addEventListener("keydown", function (e) {
+        proctorLog('keyboard used')
+        message = "Don't use keyboard while giving exam!"
         $('#status').text(message)
-        return false
-    }
-})
+        e.preventDefault()
+    })
+}
 
-// Start the exam upon button click
-function startExam() {
-    $('#start_exam_button').remove()
-    if (userVideoTracking) { connectProctor(); $('#status').text('Connecting with a proctor...') }
-    gotoFullScreen()
-    data.forEach(displayQuestion)
-    startTimer()
+// Track Right Click usage
+function trackRightClick() {
+    $(document).bind("contextmenu", function (e) {
+        if (!allowRightClick) {
+            proctorLog('right click used')
+            message = "Don't use right click while giving exam!"
+            $('#status').text(message)
+            return false
+        }
+    })
 }
 
 // Add question for each question in exam
@@ -122,4 +182,21 @@ function displayQuestion(q) {
 // Add option for each option in question
 function populateOptions(o) {
     $('#q' + qc + '_body').append('<div class="form-check"><input class= "form-check-input" type = "checkbox" ><label class="form-check-label">' + o + '</label></div >')
+}
+
+// Start the exam upon button click
+function startExam() {
+    // Prepare environment
+    $('#start_exam_button').remove()
+    if (userVideoTracking) { connectProctor(); $('#status').text('Connecting with a proctor...') }
+    if (keepFullScreen) { gotoFullScreen() }
+    if (blockMultitasking) { trackSwitchTabApplication() }
+    if (blockKeyboard) { trackKeyboard() }
+    if (blockRightClick) (trackRightClick())
+
+    // Load questions
+    data.forEach(displayQuestion)
+
+    // Start timer
+    if (timeBound) { startTimer() }
 }

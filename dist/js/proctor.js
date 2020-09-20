@@ -1,9 +1,12 @@
+// Global variables
 const video = document.getElementById('video')
 const isNotAlone = (currentValue) => currentValue > 1
 const isNotVisible = (currentValue) => currentValue < 1
 const isAloneVisible = (currentValue) => currentValue == 1
 var peopleCounts = [1, 1, 1, 1, 1]
 var sliceCount = 0
+var examLog = []
+var elapsedTime = 0
 
 Promise.all([
     faceapi.nets.tinyFaceDetector.loadFromUri('dist/js/models'),
@@ -48,15 +51,14 @@ function proctorSpeak(message) {
 }
 
 function proctorLog(message) {
-    var dateTime = new Date();
-    warning = $('#warning').text() + "<br/>" + dateTime.getHours() + ':' + dateTime.getMinutes() + ':' + dateTime.getSeconds() + ' - ' + message
-    $('#warning').html(warning)
+    examLog.push(elapsedTime + ':' + message)
+    $('#warning').empty()
+    examLog.forEach(function showExamLog(l) { $('#warning').append(l); console.log(l) })
 }
 
 // AI assisted proctor monitoring
 function proctorScene(detections) {
     var peopleCount = detections.length
-    var studentMood = ''
     var message = ''
 
     // Visual feedback if user not visible or not alone
@@ -89,7 +91,6 @@ function proctorScene(detections) {
         }
     }
     else if (peopleCounts.slice(sliceCount).every(isNotVisible)) {
-        console.log(sliceCount)
         sliceCount = 0
         message = 'I can\'t see you. Please remain in front of your screen while giving exam.'
         proctorLog('not visible')
@@ -110,18 +111,16 @@ function proctorScene(detections) {
         }
     }
     else if (peopleCount == 1) {
-        console.log(detections)
         $('#status').html(
             emojiFromExpression(detections[0]['expressions'])
         )
     }
 }
 
+// Return the emotion emoji based on values
 function emojiFromExpression(expression) {
     e = sortByValue(expression)[0][1]
-    if (e == 'angry') {
-        return '<i class="far fa-2x fa-angry"></i>'
-    }
+    if (e == 'angry') { return '<i class="far fa-2x fa-angry"></i>' }
     if (e == 'disgusted') { return '<i class="far fa-2x fa-frown-open"></i>' }
     if (e == 'fearful') { return '<i class="far fa-2x fa-flushed"></i>' }
     if (e == 'happy') { return '<i class="far fa-2x fa-laugh"></i>' }
@@ -130,6 +129,7 @@ function emojiFromExpression(expression) {
     if (e == 'surprised') { return '<i class="far fa-2x fa-surprise"></i>' }
 }
 
+// Return sorted array
 function sortByValue(jsObj) {
     var sortedArray = [];
     for (var i in jsObj) {
