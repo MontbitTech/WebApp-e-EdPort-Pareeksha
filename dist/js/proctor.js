@@ -122,13 +122,13 @@ function proctorScene(detections) {
 // Return the emotion emoji based on values
 function emojiFromExpression(expression) {
     e = sortByValue(expression)[0][1]
-    if (e == 'angry') { return '<i class="far fa-2x fa-angry"></i>' }
-    if (e == 'disgusted') { return '<i class="far fa-2x fa-frown-open"></i>' }
-    if (e == 'fearful') { return '<i class="far fa-2x fa-flushed"></i>' }
-    if (e == 'happy') { return '<i class="far fa-2x fa-laugh"></i>' }
-    if (e == 'neutral') { return '<i class="far fa-2x fa-meh"></i>' }
-    if (e == 'sad') { return '<i class="far fa-2x fa-sad-tear"></i>' }
-    if (e == 'surprised') { return '<i class="far fa-2x fa-surprise"></i>' }
+    if (e == 'angry') { return '<i class="far fa-lg fa-angry"></i>' }
+    if (e == 'disgusted') { return '<i class="far fa-lg fa-frown-open"></i>' }
+    if (e == 'fearful') { return '<i class="far fa-lg fa-flushed"></i>' }
+    if (e == 'happy') { return '<i class="far fa-lg fa-laugh"></i>' }
+    if (e == 'neutral') { return '<i class="far fa-lg fa-meh"></i>' }
+    if (e == 'sad') { return '<i class="far fa-lg fa-sad-tear"></i>' }
+    if (e == 'surprised') { return '<i class="far fa-lg fa-surprise"></i>' }
 }
 
 // Return sorted array

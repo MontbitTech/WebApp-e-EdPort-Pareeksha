@@ -39,7 +39,7 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
       width: 100%;
       height: 100%;
       position: fixed;
-      overflow: auto;
+      overflow: scroll;
     }
 
     #pauseExam {
@@ -64,7 +64,9 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
       </ul>
       <!-- Right navbar links -->
       <ul class="navbar-nav ml-auto">
-        <div style="font-size: 1.5rem;" id="timer"></div>
+        <li class="nav-item">
+          <div style="font-size: 1.5rem;" id="timer"></div>
+        </li>
         <li class="nav-item">
           <a id="toggle_sidebar" class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button"
             title="View Proctor Logs">
@@ -146,19 +148,24 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
                   <h5 class="m-0">Guidelines for the Examination</h5>
                 </div>
                 <div class="card-body">
-                  <h6 class="card-title">In case you fail to adhere to the following guidelines, your attempt for this
-                    examination would be discarded. Kindly read and follow the points sincerely.</h6><br /><br />
-                  <h6 class="card-title">Proctored Examination Guideline:</h6>
+                  <h3 class="card-title">In case you fail to adhere to the following guidelines, your attempt for this
+                    examination would be discarded. Kindly read and follow the points sincerely.</h3><br /><br />
 
-
+                  <h3 class="card-title">Proctored Examination Guideline:</h3>
                   <p class="card-text">
                     1. You will be responsible for ensuring proper lighting so that your face is visible in the
-                    webcam.
+                    webcam.<br />
+                    2. You will be responsible for ensuring that you remain alone while giving the exam.
+                  </p>
+
+                  <h3 class="card-title">Device Usage Guideline:</h3>
+                  <p class="card-text">
+                    1. You will not be allowed to switch applications once the exam begins.<br />
+                    2. You will not be allowed to exit the full screen once the exam begins.
                   </p>
 
                   <p id="start_exam_button" style="min-width:100%;text-align:center;"><a href="#" onclick="startExam()"
-                      class="btn btn-danger"><b>Start
-                        Examination</b></a>
+                      class="btn btn-danger"><b>Start Examination</b></a>
                   </p>
                 </div>
               </div>
@@ -185,8 +192,13 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
     <!-- /.control-sidebar -->
 
     <!-- Main Footer -->
-    <footer class="main-footer" style="text-align:center;">
-      <span id="status"></span>
+    <footer class="main-footer">
+      <span id="submitButton" style="visibility:hidden;">
+        <button type="button" onclick="endExam()" class="btn btn-success"><i class="fas fa-save"></i>
+          &nbsp;SUBMIT NOW </button>
+      </span>
+      <span id="status" class="float-right" style="font-size: 1.5rem;"></span>
+
     </footer>
   </div>
 

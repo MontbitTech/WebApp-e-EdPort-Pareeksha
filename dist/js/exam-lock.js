@@ -5,19 +5,19 @@ var proctorLanguage = 'hindi'
 
 // Full Screen while giving exam
 var keepFullScreen = true
-var fullScreenExitAttempts = 3
+var fullScreenExitAttempts = 5
 
 // Multitasking while giving exam
 var blockMultitasking = true
-var multitaskingAttempts = 3
+var multitaskingAttempts = 5
 
 // Capture and save user image while giving exam
 var userImageCapture = true
 
 // Student Video Tracking while giving exam
 var userVideoTracking = true
-var userNotAloneWarningCount = 2
-var userNotVisibleWarningCount = 2
+var userNotAloneWarningCount = 3
+var userNotVisibleWarningCount = 3
 
 // Student Audio Tracking while giving exam
 var userAudioTracking = true
@@ -225,6 +225,7 @@ function startExam() {
 
     // Load questions
     data.forEach(displayQuestion)
+    $('#submitButton').css('visibility', 'visible')
 
     // Start timer
     if (timeBound) { startTimer() }
@@ -246,4 +247,8 @@ function terminateExam() {
     // Submit the current state
     // Set exam as terminated
     // Close the exam
+}
+
+function endExam() {
+    window.location.replace("");
 }
