@@ -160,12 +160,10 @@ function trackKeyboard() {
 // Track Right Click usage
 function trackRightClick() {
     $(document).bind("contextmenu", function (e) {
-        if (!allowRightClick) {
-            proctorLog('right click used')
-            message = "Don't use right click while giving exam!"
-            $('#status').text(message)
-            return false
-        }
+        proctorLog('right click used')
+        message = "Don't use right click while giving exam!"
+        $('#status').text(message)
+        return false
     })
 }
 
@@ -173,10 +171,10 @@ function trackRightClick() {
 function displayQuestion(q) {
     ++qc
     $('#questions').append('<div id="question' + qc + '" style="padding-top:60px;" class="col-lg-12"><div id="q' + qc + '" class="card"></div></div>')
-    $('#q' + qc).append('<div class="card-header"><h5 class="m-0">Question ' + qc + '</h5></div>')
+    $('#q' + qc).append('<div class="card-header"><h3 class="card-title">Question ' + qc + '</h3><div class="card-tools"><button type="button" onclick="toggleFlag(this)" class="btn btn-tool"><i class="fas fa-flag"></i></button></div ></div>')
     $('#q' + qc).append('<div id="q' + qc + '_body" class="card-body"><h6 class= "card-title">' + q.question + '</h6><br/><br/></div>')
     q.options.forEach(populateOptions)
-    $('#questionList').append('<li class="nav-item"><a href="#question' + qc + '" class="nav-link"><i class="far fa-circle fa-sm nav-icon"></i><p>&nbsp;Question ' + qc + '</p></a></li>')
+    $('#questionList').append('<li class="nav-item"><a href="#question' + qc + '" class="nav-link"><i id="question' + qc + '_button" class="far fa-circle text-warning fa-sm nav-icon"></i><p>&nbsp;Question ' + qc + '</p></a></li>')
 }
 
 // Add option for each option in question
@@ -184,10 +182,23 @@ function populateOptions(o) {
     $('#q' + qc + '_body').append('<div class="form-check"><input class= "form-check-input" type = "checkbox" ><label class="form-check-label">' + o + '</label></div >')
 }
 
+// Toggle flag for questions
+function toggleFlag(e) {
+    if ($(e).children().hasClass('text-danger')) {
+        $(e).children('.fa-flag').removeClass('text-danger')
+        $('#' + $(e).closest('.col-lg-12').attr('id') + '_button').removeClass('text-danger fa-flag').addClass('fa-circle text-warning')
+    }
+    else {
+        $(e).children('.fa-flag').addClass('text-danger')
+        $('#' + $(e).closest('.col-lg-12').attr('id') + '_button').removeClass('fa-circle text-warning text-success text-danger').addClass('text-danger fa-flag')
+    }
+}
+
 // Start the exam upon button click
 function startExam() {
     // Prepare environment
     $('#start_exam_button').remove()
+    $('#guidelines_button').removeClass('fa-circle').addClass('text-success fa-check-circle')
     if (userVideoTracking) { connectProctor(); $('#status').text('Connecting with a proctor...') }
     if (keepFullScreen) { gotoFullScreen() }
     if (blockMultitasking) { trackSwitchTabApplication() }
@@ -199,4 +210,10 @@ function startExam() {
 
     // Start timer
     if (timeBound) { startTimer() }
+}
+
+function terminateExam() {
+    // Submit the current state
+    // Set exam as terminated
+    // Close the exam
 }

@@ -12,7 +12,7 @@ function startTimer(hh = 3, mm = 0, ss = 0) {
             alert('Time Over')
         }
         else {
-            if (hh == 1 && mm < 30) { $('#timer').css('color', 'red'); }
+            if (hh == 0 && mm == 15) { $('#timer').css('color', 'red'); }
         }
         $('#timer').html((hh < 10 ? '0' + hh : hh) + ':' + (mm < 10 ? '0' + mm : mm) + ':' + (ss < 10 ? '0' + ss : ss))
     }, 1000);

@@ -3,7 +3,7 @@ const video = document.getElementById('video')
 const isNotAlone = (currentValue) => currentValue > 1
 const isNotVisible = (currentValue) => currentValue < 1
 const isAloneVisible = (currentValue) => currentValue == 1
-var peopleCounts = [1, 1, 1, 1, 1]
+var peopleCounts = [1, 1, 1, 1, 1, 1]
 var sliceCount = 0
 var examLog = []
 var elapsedTime = 0
@@ -40,7 +40,6 @@ function connectProctor() {
         setInterval(async () => {
             const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions()
             proctorScene(detections)
-            console.log(peopleCounts)
         }, 3000)
     }
 }
@@ -51,9 +50,12 @@ function proctorSpeak(message) {
 }
 
 function proctorLog(message) {
-    examLog.push(elapsedTime + ':' + message)
+    var hh = Math.floor(elapsedTime / 60 / 60) % 24
+    var mm = Math.floor(elapsedTime / 60) % 60
+    var ss = elapsedTime % 60
+    examLog.push((hh < 10 ? '0' + hh : hh) + ':' + (mm < 10 ? '0' + mm : mm) + ':' + (ss < 10 ? '0' + ss : ss) + ' - ' + message)
     $('#warning').empty()
-    examLog.forEach(function showExamLog(l) { $('#warning').append(l); console.log(l) })
+    examLog.forEach(function showExamLog(l) { $('#warning').append(l + '<br/>'); })
 }
 
 // AI assisted proctor monitoring
