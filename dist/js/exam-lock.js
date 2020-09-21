@@ -5,23 +5,23 @@ var proctorLanguage = 'hindi'
 
 // Full Screen while giving exam
 var keepFullScreen = true
-var fullScreenExitAttempts = 5
+var fullScreenExitAttempts = 2
 
 // Multitasking while giving exam
 var blockMultitasking = true
-var multitaskingAttempts = 5
+var multitaskingAttempts = 2
 
 // Capture and save user image while giving exam
 var userImageCapture = true
 
 // Student Video Tracking while giving exam
 var userVideoTracking = true
-var userNotAloneWarningCount = 3
-var userNotVisibleWarningCount = 3
+var userNotAloneWarningCount = 2
+var userNotVisibleWarningCount = 2
 
 // Student Audio Tracking while giving exam
 var userAudioTracking = true
-var userAudioWarningCount = 3
+var userAudioWarningCount = 2
 
 // Keyboard usage while giving exam
 var blockKeyboard = true
@@ -31,65 +31,54 @@ var blockRightClick = true
 
 // Time bound exam
 var timeBound = true
+timerPaused = false
 
 // Proctor Speech Dictionary
 // TODO: Make list of all warnings in 'hindi' and 'english'
-var d = [{
-    'hindi': [{
-        'fullScreenWarning': [{
-            1: 'full screen se bahar na jaayein',
-            2: 'exam dete waqt full screen zaroori h',
-            3: 'kripya exam dete waqt full screen mode me rahein'
-        }],
-        'multitaskingWarning': [{
-            1: 'exam dete waqt multitasking naa karein',
-            2: 'kripya tab athwa application naa badlein',
-            3: 'sirf exam pe focus karein'
-        }],
-        'userNotAloneWarning': [{
-            1: 'exam dete waqt akele rahein',
-            2: 'kripya exam me kisi ki madad na len',
-            3: 'exam dete wat kisi aur ke saath na rahein'
-        }],
-        'userNotVisibleWarning': [{
-            1: 'exam dete waqt hamesha camera ke saamne rahein',
-            2: 'kripya camera ke saamne rahein aur proper light me rahein',
-            3: 'camera ke saamne rahein'
-        }],
-        'userAudioWarning': [{
-            1: 'kripya shanti banaye rahein',
-            2: 'exam dete waqt aawaaz na karein',
-            3: 'shhhh! shanti banaye rakhein!'
-        }],
-    }],
-    'english': [{
-        'fullScreenWarning': [{
-            1: 'do not exit the full screen',
-            2: 'remain in full screen while giving exam',
-            3: 'please do not switch from full screen mode while giving exam'
-        }],
-        'multitaskingWarning': [{
-            1: 'avoid multitasking while giving exam',
-            2: 'kindly do not switch tabs or applications',
-            3: 'focus only on your exam'
-        }],
-        'userNotAloneWarning': [{
-            1: 'remain alone while giving exam',
-            2: 'kindly do not involve others in your exam',
-            3: 'stay alone while you are giving exam'
-        }],
-        'userNotVisibleWarning': [{
-            1: 'always stay in front of camera while giving exam',
-            2: 'please stay in front of camera and ensure proper lighting',
-            3: 'remain in front of the camera'
-        }],
-        'userAudioWarning': [{
-            1: 'please stay quiet',
-            2: 'do not make noise while giving exam',
-            3: 'shhhh! remain quiet!'
-        }],
-    }]
-}]
+var d = {
+    'fullScreenWarning': {
+        0: 'fullscreen exit',
+        1: 'do not exit the full screen',
+        2: 'remain in full screen while giving exam',
+        3: 'please do not switch from full screen mode while giving exam'
+    },
+    'multitaskingWarning': {
+        0: 'tab/browser switch',
+        1: 'avoid multitasking while giving exam',
+        2: 'kindly do not switch tabs or applications',
+        3: 'focus only on your exam'
+    },
+    'userNotAloneWarning': {
+        0: 'not alone',
+        1: 'remain alone while giving exam',
+        2: 'kindly do not involve others in your exam',
+        3: 'stay alone while you are giving exam'
+    },
+    'userNotVisibleWarning': {
+        0: 'not visible',
+        1: 'always stay in front of camera while giving exam',
+        2: 'please stay in front of camera and ensure proper lighting',
+        3: 'remain in front of the camera'
+    },
+    'userAudioWarning': {
+        0: 'noise',
+        1: 'please stay quiet',
+        2: 'do not make noise while giving exam',
+        3: 'shhhh! remain quiet!'
+    },
+    'keyboardUsed': {
+        0: 'keyboard used',
+        1: 'please do not use keyboard',
+        2: 'do not use keyboard while giving exam',
+        3: 'using keyboard is not allowed'
+    },
+    'rightClickUsed': {
+        0: 'right-click used',
+        1: 'please do not use right-click',
+        2: 'do not use right-click while giving exam',
+        3: 'using right-click is not allowed'
+    }
+}
 
 // System compatibility test
 var systemIncompatible = false
@@ -98,6 +87,10 @@ var systemIncompatibleReason = ''
 // Exam termination
 var examTerminated = false
 var examTerminationReason = ''
+
+// Examination URLs
+var displayResultURL = ''
+var errorPageURL = ''
 
 // Global Variables
 var qc = 0
@@ -117,16 +110,20 @@ function gotoFullScreen() {
 function monitorFullScreen() {
     document.addEventListener('fullscreenchange', (event) => {
         if (!document.fullscreenElement) {
+            --fullScreenExitAttempts
             if (fullScreenExitAttempts <= 0) {
                 examTerminated = true
-                examTerminationReason += 'Closed full screen'
-                // TODO: End Exam
-                window.location.replace("");
+                examTerminationReason = 'Closed full screen'
+                terminateExam()
             }
             else {
+                // Proctor Warning
+                proctorLog('fullScreenWarning')
+                proctorSpeak('fullScreenWarning')
                 // Display Warning
+                // Pause Exam
                 pauseExam()
-                --fullScreenExitAttempts
+
             }
         }
     })
@@ -138,12 +135,13 @@ function trackSwitchTabApplication() {
         --multitaskingAttempts
         if (multitaskingAttempts <= 0) {
             examTerminated = true
-            examTerminationReason += 'Switched tab/browser'
-            // TODO: End Exam
-            window.location.replace("");
+            examTerminationReason = 'Switched tab/browser'
+            terminateExam()
         }
         else {
             // Proctor Warning
+            proctorLog('multitaskingWarning')
+            proctorSpeak('multitaskingWarning')
             // Display Warning
             // Pause Exam
             pauseExam()
@@ -154,9 +152,7 @@ function trackSwitchTabApplication() {
 // Track Keyboard usage
 function trackKeyboard() {
     document.addEventListener("keydown", function (e) {
-        proctorLog('keyboard used')
-        message = "Don't use keyboard while giving exam!"
-        $('#status').text(message)
+        proctorLog('keyboardUsed')
         e.preventDefault()
     })
 }
@@ -164,9 +160,7 @@ function trackKeyboard() {
 // Track Right Click usage
 function trackRightClick() {
     $(document).bind("contextmenu", function (e) {
-        proctorLog('right click used')
-        message = "Don't use right click while giving exam!"
-        $('#status').text(message)
+        proctorLog('rightClickUsed')
         return false
     })
 }
@@ -212,12 +206,40 @@ function toggleChecked(qn) {
     }
 }
 
+// Gather user detail
+async function gatherUserDetail() {
+    const { value: email } = await Swal.fire({
+        title: 'Input email ID',
+        input: 'email',
+        inputPlaceholder: 'Enter your registered email ID',
+        inputValue: 'correct@user.com',
+        allowOutsideClick: false,
+        allowEscapeKey: false
+    })
+    checkValidUser(email)
+}
+
+// Check if user is valid
+function checkValidUser(email) {
+    // TODO: server side check user
+    if (email === 'correct@user.com') {
+        // TODO: Update username and examination code
+    }
+    else {
+        ErrorBox.fire({
+            timer: 5000, allowOutsideClick: false, allowEscapeKey: false, title: 'Incorrect Details!', html: 'The email ID provided by you is incorrect. Kindly enter your registered email ID.'
+        }).then((result) => {
+            if (result.dismiss === Swal.DismissReason.timer) { window.location.replace(errorPageURL) }
+        })
+    }
+}
+
 // Start the exam upon button click
 function startExam() {
     // Prepare environment
     $('#start_exam_button').remove()
     $('#guidelines_button').removeClass('fa-circle').addClass('text-info fa-check-circle')
-    if (userVideoTracking) { connectProctor(); $('#status').text('Connecting with a proctor...') }
+    if (userVideoTracking) { connectProctor() }
     if (keepFullScreen) { gotoFullScreen() }
     if (blockMultitasking) { trackSwitchTabApplication() }
     if (blockKeyboard) { trackKeyboard() }
@@ -233,22 +255,67 @@ function startExam() {
 
 function pauseExam() {
     // Prepare environment
+    timerPaused = true
     $('#pauseExam').modal({ backdrop: 'static', keyboard: false })
-    $("#pauseExam").modal('show');
+    $("#pauseExam").modal('show')
 }
 
 function resumeExam() {
     // Prepare environment
     gotoFullScreen()
-    $('#pauseExam').hide()
+    $('#pauseExam').modal('hide')
+    timerPaused = false
 }
 
 function terminateExam() {
     // Submit the current state
     // Set exam as terminated
     // Close the exam
+    ErrorBox.fire({
+        timer: 10000, allowOutsideClick: false, allowEscapeKey: false, title: 'Examination Terminated!', html: 'You examination was terminated by the proctor. Reason: ' + examTerminationReason
+    }).then((result) => {
+        if (result.dismiss === Swal.DismissReason.timer) { window.location.replace(errorPageURL) }
+    })
 }
 
-function endExam() {
-    window.location.replace("");
+function endExam(reason) {
+    if (reason == 'cameraNotAllowed') {
+        ErrorBox.fire({
+            timer: 10000, allowOutsideClick: false, allowEscapeKey: false, title: 'Cannot Begin Exam!', html: 'You cannot begin the exam without allowing access to camera.'
+        }).then((result) => {
+            if (result.dismiss === Swal.DismissReason.timer) { window.location.replace(errorPageURL) }
+        })
+    }
+    if (reason == 'cameraNotFound') {
+        ErrorBox.fire({
+            timer: 10000, allowOutsideClick: false, allowEscapeKey: false, title: 'Cannot Begin Exam!', html: 'You cannot give the exam on a device which does not have camera'
+        }).then((result) => {
+            if (result.dismiss === Swal.DismissReason.timer) { window.location.replace(errorPageURL) }
+        })
+    }
+
 }
+
+function finishExam(m = '') {
+    Swal.fire({
+        timer: 3000, allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, timerProgressBar: true,
+        icon: 'success', title: 'Successfully saved & submitted!', html: m + '<br/> You have completed this examination successfully.'
+    }).then((result) => {
+        if (result.dismiss === Swal.DismissReason.timer) { window.location.replace(displayResultURL) }
+    })
+}
+
+// Miscellaneous UI/UX + Code Clean
+const ErrorBox = Swal.mixin({
+    icon: 'error',
+    timerProgressBar: true,
+    showConfirmButton: false,
+    onBeforeOpen: () => { Swal.showLoading() }
+});
+
+const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000
+});

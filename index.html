@@ -50,7 +50,8 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
   </style>
 </head>
 
-<body onselectstart="return false" class="sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+<body onselectstart="return false" class="sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed"
+  onload="gatherUserDetail()">
   <div class="wrapper">
 
     <!-- Navbar -->
@@ -184,20 +185,21 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
       <div id="proctor" class="p-3">
         <!-- Video Feed Box -->
         <video id="video" autoplay muted></video>
-        <h5><small><b>PROCTOR NOTES:</b></small></h5>
-        <p id="warning" style="font-size:x-small;"></p>
+        <hr />
+        <h5 style="text-align:center;"><small><b><u>PROCTOR FEEDBACK</u></b></small></h5>
+        <div id="warning" style="min-height:40vh;max-height:40vh;font-size:small;overflow:scroll;"></div>
       </div>
     </aside>
     <!-- /.control-sidebar -->
 
     <!-- Main Footer -->
-    <footer class="main-footer">
-      <span id="submitButton" style="visibility:hidden;">
-        <button type="button" onclick="endExam()" class="btn btn-success"><i class="fas fa-save"></i>
-          &nbsp;SUBMIT NOW </button>
+    <footer class="main-footer" style="text-align: center; padding:5px;">
+      <span id="emotion" class="float-left"></span>
+      <span id="status" style="font-size: x-small;"></span>
+      <span id="submitButton" class="float-right" style="visibility:hidden;">
+        <button type="button" onclick=finishExam() class="btn btn-success btn-sm"><i class="fas fa-paper-plane"></i>
+          &nbsp;Finish </button>
       </span>
-      <span id="status" class="float-right" style="font-size: 1.5rem;"></span>
-
     </footer>
   </div>
 
@@ -207,16 +209,15 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
   <div class="modal fade" id="pauseExam">
     <div class="modal-dialog">
       <div class="modal-content bg-secondary">
-        <div class="modal-header">
-          <h4 class="modal-title">Warning Heading</h4>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true"></span></button>
+        <div class="modal-header justify-content-center">
+          <h4 class="modal-title">Termination Warning!</h4>
         </div>
         <div class="modal-body">
-          <p>Warning body…</p>
+          <p>You are not allowed to exit full-screen or switch tab/browser while giving the examination. If you do so
+            repeatedly, the proctor would terminate this examination.</p>
         </div>
         <div class="modal-footer justify-content-center">
-          <button type="button" onclick=resumeExam() class="btn btn-outline-light" data-dismiss="modal">Accept</button>
+          <button type="button" onclick=resumeExam() class="btn btn-outline-light" data-dismiss="modal">OK</button>
         </div>
       </div>
       <!-- /.modal-content -->
@@ -230,6 +231,8 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
   <script src="plugins/jquery/jquery.min.js"></script>
   <!-- Bootstrap 4 -->
   <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- SweetAlert 2 -->
+  <script defer src="plugins/sweetalert2/sweetalert2.all.min.js"></script>
   <!-- AdminLTE App -->
   <script src="dist/js/adminlte.min.js"></script>
   <!-- Face API -->
@@ -240,6 +243,7 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
   <script defer src="dist/js/exam-lock.js"></script>
   <!-- Timer Integration -->
   <script defer src="dist/js/timer.js"></script>
+
   <!-- Getting Question Paper JSON -->
   <script>
     var data = [
