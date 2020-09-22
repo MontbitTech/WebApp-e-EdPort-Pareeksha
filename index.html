@@ -9,6 +9,7 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Pareeksha platform for conducting online examination.">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
 
   <title>परीक्षा | {Examination Code}</title>
@@ -20,11 +21,13 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
   <link rel="manifest" href="dist/img/favicon/site.webmanifest">
 
   <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
+  <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css" media="none"
+    onload="if(media!='all')media='all'">
   <!-- Theme style -->
-  <link rel="stylesheet" href="dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="dist/css/adminlte.min.css" media="none" onload="if(media!='all')media='all'">
   <!-- Google Font: Source Sans Pro -->
-  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet" media="none"
+    onload="if(media!='all')media='all'">
 
   <!-- Custom Styling -->
   <style>
@@ -128,9 +131,9 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
               <h1 class="m-0 text-dark">Welcome, {User}</h1>
             </div><!-- /.col -->
             <div class="col-sm-6">
-              <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item"><a href="#">Pareeksha</a></li>
-                <li class="breadcrumb-item active">{Examination Code}</li>
+              <ol class="breadcrumb float-sm-right text-dark">
+                <li class="m-0 breadcrumb-item">Pareeksha</li>
+                <li class="m-0 breadcrumb-item">{Examination Code}</li>
               </ol>
             </div><!-- /.col -->
           </div><!-- /.row -->
@@ -180,7 +183,7 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
     <!-- /.content-wrapper -->
 
     <!-- Control Sidebar -->
-    <aside class="control-sidebar control-sidebar-dark">
+    <aside class="control-sidebar control-sidebar-light text-dark">
       <!-- Control sidebar content goes here -->
       <div id="proctor" class="p-3">
         <!-- Video Feed Box -->

@@ -14,12 +14,12 @@ var multitaskingAttempts = 2
 // Capture and save user image while giving exam
 var userImageCapture = true
 
-// Student Video Tracking while giving exam
+// User Video Tracking while giving exam
 var userVideoTracking = true
 var userNotAloneWarningCount = 2
 var userNotVisibleWarningCount = 2
 
-// Student Audio Tracking while giving exam
+// User Audio Tracking while giving exam
 var userAudioTracking = true
 var userAudioWarningCount = 2
 
@@ -31,11 +31,35 @@ var blockRightClick = true
 
 // Time bound exam
 var timeBound = true
-timerPaused = false
+
+// System compatibility test
+var systemIncompatible = false
+var systemIncompatibleReason = ''
+
+// Exam termination
+var examTerminated = false
+var examTerminationReason = ''
+
+// Exam pause
+var examPaused = false
+var examPausedReason = ''
+
+// Examination URLs
+var displayResultURL = ''
+var errorPageURL = ''
+
+// Global Variables
+var qc = 0
 
 // Proctor Speech Dictionary
 // TODO: Make list of all warnings in 'hindi' and 'english'
 var d = {
+    'lessTimeRemaining': {
+        0: 'less time remaining',
+        1: 'hurry up, exam time is about to finish',
+        2: 'hurry up, very less time remaining',
+        3: 'hurry up, the exam is about to finish soon',
+    },
     'fullScreenWarning': {
         0: 'fullscreen exit',
         1: 'do not exit the full screen',
@@ -79,21 +103,6 @@ var d = {
         3: 'using right-click is not allowed'
     }
 }
-
-// System compatibility test
-var systemIncompatible = false
-var systemIncompatibleReason = ''
-
-// Exam termination
-var examTerminated = false
-var examTerminationReason = ''
-
-// Examination URLs
-var displayResultURL = ''
-var errorPageURL = ''
-
-// Global Variables
-var qc = 0
 
 // Switch to full screen if defined by examiner
 function gotoFullScreen() {
@@ -213,6 +222,9 @@ async function gatherUserDetail() {
         input: 'email',
         inputPlaceholder: 'Enter your registered email ID',
         inputValue: 'correct@user.com',
+        inputAttributes: {
+            'aria-label': 'Registered email ID'
+        },
         allowOutsideClick: false,
         allowEscapeKey: false
     })
@@ -239,7 +251,8 @@ function startExam() {
     // Prepare environment
     $('#start_exam_button').remove()
     $('#guidelines_button').removeClass('fa-circle').addClass('text-info fa-check-circle')
-    if (userVideoTracking) { connectProctor() }
+    if (userVideoTracking) { proctorVideo() }
+    if (userAudioTracking) { proctorAudio() }
     if (keepFullScreen) { gotoFullScreen() }
     if (blockMultitasking) { trackSwitchTabApplication() }
     if (blockKeyboard) { trackKeyboard() }
@@ -253,31 +266,7 @@ function startExam() {
     if (timeBound) { startTimer() }
 }
 
-function pauseExam() {
-    // Prepare environment
-    timerPaused = true
-    $('#pauseExam').modal({ backdrop: 'static', keyboard: false })
-    $("#pauseExam").modal('show')
-}
-
-function resumeExam() {
-    // Prepare environment
-    gotoFullScreen()
-    $('#pauseExam').modal('hide')
-    timerPaused = false
-}
-
-function terminateExam() {
-    // Submit the current state
-    // Set exam as terminated
-    // Close the exam
-    ErrorBox.fire({
-        timer: 10000, allowOutsideClick: false, allowEscapeKey: false, title: 'Examination Terminated!', html: 'You examination was terminated by the proctor. Reason: ' + examTerminationReason
-    }).then((result) => {
-        if (result.dismiss === Swal.DismissReason.timer) { window.location.replace(errorPageURL) }
-    })
-}
-
+// End the exam upon encountering system issues
 function endExam(reason) {
     if (reason == 'cameraNotAllowed') {
         ErrorBox.fire({
@@ -296,6 +285,35 @@ function endExam(reason) {
 
 }
 
+// Pause the exam due to user actions
+function pauseExam() {
+    // Prepare environment
+    examPaused = true
+    $('#pauseExam').modal({ backdrop: 'static', keyboard: false })
+    $("#pauseExam").modal('show')
+}
+
+// Resume the exam upon user confirmation
+function resumeExam() {
+    // Prepare environment
+    gotoFullScreen()
+    $('#pauseExam').modal('hide')
+    timerPaused = false
+}
+
+// Terminate the exam due to repeated user actions
+function terminateExam() {
+    // Submit the current state
+    // Set exam as terminated
+    // Close the exam
+    ErrorBox.fire({
+        timer: 10000, allowOutsideClick: false, allowEscapeKey: false, title: 'Examination Terminated!', html: 'You examination was terminated by the proctor. Reason: ' + examTerminationReason
+    }).then((result) => {
+        if (result.dismiss === Swal.DismissReason.timer) { window.location.replace(errorPageURL) }
+    })
+}
+
+// Finish the exam successfully
 function finishExam(m = '') {
     Swal.fire({
         timer: 3000, allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, timerProgressBar: true,
@@ -315,7 +333,7 @@ const ErrorBox = Swal.mixin({
 
 const Toast = Swal.mixin({
     toast: true,
-    position: 'top-end',
+    position: 'bottom',
     showConfirmButton: false,
     timer: 3000
 });
