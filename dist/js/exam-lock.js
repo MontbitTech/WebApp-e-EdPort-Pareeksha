@@ -129,7 +129,8 @@ function monitorFullScreen() {
                 // Proctor Warning
                 proctorLog('fullScreenWarning')
                 proctorSpeak('fullScreenWarning')
-                // Display Warning
+                // Change Warning
+                $('.modal-body').empty().text('You have attempted switching from full screen. This action is not allowed while giving exam: ' + fullScreenExitAttempts + ' attempt(s) remaining.')
                 // Pause Exam
                 pauseExam()
 
@@ -151,7 +152,8 @@ function trackSwitchTabApplication() {
             // Proctor Warning
             proctorLog('multitaskingWarning')
             proctorSpeak('multitaskingWarning')
-            // Display Warning
+            // Change Warning
+            $('.modal-body').empty().text('You have attempted switching tab/browser. This action is not allowed while giving exam: ' + multitaskingAttempts + ' attempt(s) remaining.')
             // Pause Exam
             pauseExam()
         }
@@ -337,3 +339,20 @@ const Toast = Swal.mixin({
     showConfirmButton: false,
     timer: 3000
 });
+
+// function hideSidebar() {
+//     var secondsRemaining = 3
+//     var sidebarInterval = setInterval(function () {
+//         --secondsRemaining
+//         if (secondsRemaining == 0) {
+//             clearInterval(sidebarInterval);
+//             if ($('body').hasClass('control-sidebar-slide-open')) {
+//                 $('#toggle_sidebar').trigger('click')
+//             }
+//         }
+//     }, 1000);
+// }
+
+document.addEventListener("expanded.lte.controlsidebar", function () {
+    console.log('here')
+})

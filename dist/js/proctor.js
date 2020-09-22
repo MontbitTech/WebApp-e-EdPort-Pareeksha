@@ -70,7 +70,8 @@ function assistantAI(detections) {
                 // Proctor Warning
                 proctorLog('userNotAloneWarning')
                 proctorSpeak('userNotAloneWarning')
-                // Display Warning
+                // Change Warning
+                $('.modal-body').empty().text('You must be alone while giving exam: ' + userNotAloneWarningCount + ' attempt(s) remaining.')
                 // Pause Exam
                 return pauseExam()
             }
@@ -86,7 +87,8 @@ function assistantAI(detections) {
                 // Proctor Warning
                 proctorLog('userNotVisibleWarning')
                 proctorSpeak('userNotVisibleWarning')
-                // Display Warning
+                // Change Warning
+                $('.modal-body').empty().text('You must be visible in camera while giving exam: ' + userNotVisibleWarningCount + ' attempt(s) remaining.')
                 // Pause Exam
                 return pauseExam()
             }
@@ -101,13 +103,9 @@ function assistantAI(detections) {
 
 // AI assisted proctor audio monitoring
 function proctorAudio() {
-    navigator.getUserMedia = navigator.getUserMedia ||
-        navigator.webkitGetUserMedia ||
-        navigator.mozGetUserMedia;
+    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
     if (navigator.getUserMedia) {
-        navigator.getUserMedia({
-            audio: true
-        },
+        navigator.getUserMedia({ audio: true },
             function (stream) {
                 audioContext = new AudioContext();
                 analyser = audioContext.createAnalyser();
@@ -133,7 +131,9 @@ function proctorAudio() {
 
                     var average = values / length;
 
-                    //console.log(Math.round(average - 40));
+                    if (Math.round(average - 40) > 50) {
+
+                    }
                 }
             },
             function (err) {
@@ -154,8 +154,7 @@ function proctorSpeak(warningCode) {
 // Update proctor log for warnings
 function proctorLog(warningCode) {
     var message = d[warningCode][0]
-    $('#status').text(message)
-    setTimeout(function () { $('#status').empty() }, 3000)
+    Toast.fire({ icon: 'error', title: message })
     var hh = Math.floor(elapsedTime / 60 / 60) % 24
     var mm = Math.floor(elapsedTime / 60) % 60
     var ss = elapsedTime % 60
