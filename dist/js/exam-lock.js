@@ -291,15 +291,16 @@ function endExam(reason) {
 function pauseExam() {
     // Prepare environment
     examPaused = true
-    $('#toggle_sidebar').trigger('click')
     $('#pauseExam').modal({ backdrop: 'static', keyboard: false })
     $('#pauseExam').modal('show')
+    $('#toggle_sidebar').trigger('click')
 }
 
 // Resume the exam upon user confirmation
 function resumeExam() {
     // Prepare environment
     gotoFullScreen()
+    $('#toggle_sidebar').trigger('click')
     $('#pauseExam').modal('hide')
     examPaused = false
 }
