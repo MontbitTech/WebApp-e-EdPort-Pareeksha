@@ -54,7 +54,8 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
   </style>
 </head>
 
-<body onselectstart="return false" class="sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed"
+<body onselectstart="return false"
+  class="sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed control-sidebar-push"
   onload="gatherUserDetail()">
   <div class="wrapper">
 
@@ -190,6 +191,8 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
         <!-- Video Feed Box -->
         <video id="video" autoplay muted></video>
         <hr />
+        <h5 style="text-align:center;"><small>STUDENT EMOTION<br /><span id="emotion"></span></small></h5>
+        <hr />
         <h5 style="text-align:center;"><small><b><u>PROCTOR FEEDBACK</u></b></small></h5>
         <div id="warning" style="min-height:40vh;max-height:40vh;font-size:small;overflow:scroll;"></div>
       </div>
@@ -198,8 +201,8 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
 
     <!-- Main Footer -->
     <footer class="main-footer" style="text-align: center; padding:5px;">
-      <span id="emotion" class="float-left"></span>
-      <span id="submitButton" class="float-right" style="visibility:hidden;">
+
+      <span id="submitButton" style="visibility:hidden;">
         <button type="button" onclick=finishExam() class="btn btn-success btn-sm"><i class="fas fa-paper-plane"></i>
           &nbsp;Finish </button>
       </span>
@@ -220,7 +223,7 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
             repeatedly, the proctor would terminate this examination.</p>
         </div>
         <div class="modal-footer justify-content-center">
-          <button type="button" onclick=resumeExam() class="btn btn-outline-light" data-dismiss="modal">OK</button>
+          <button type="button" onclick="resumeExam()" class=" btn btn-outline-light" data-dismiss="modal">OK</button>
         </div>
       </div>
       <!-- /.modal-content -->

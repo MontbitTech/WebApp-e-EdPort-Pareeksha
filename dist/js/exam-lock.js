@@ -163,8 +163,8 @@ function trackSwitchTabApplication() {
 // Track Keyboard usage
 function trackKeyboard() {
     document.addEventListener("keydown", function (e) {
-        proctorLog('keyboardUsed')
         e.preventDefault()
+        proctorLog('keyboardUsed')
     })
 }
 
@@ -291,8 +291,9 @@ function endExam(reason) {
 function pauseExam() {
     // Prepare environment
     examPaused = true
+    $('#toggle_sidebar').trigger('click')
     $('#pauseExam').modal({ backdrop: 'static', keyboard: false })
-    $("#pauseExam").modal('show')
+    $('#pauseExam').modal('show')
 }
 
 // Resume the exam upon user confirmation
@@ -300,7 +301,7 @@ function resumeExam() {
     // Prepare environment
     gotoFullScreen()
     $('#pauseExam').modal('hide')
-    timerPaused = false
+    examPaused = false
 }
 
 // Terminate the exam due to repeated user actions
@@ -310,9 +311,7 @@ function terminateExam() {
     // Close the exam
     ErrorBox.fire({
         timer: 10000, allowOutsideClick: false, allowEscapeKey: false, title: 'Examination Terminated!', html: 'You examination was terminated by the proctor. Reason: ' + examTerminationReason
-    }).then((result) => {
-        if (result.dismiss === Swal.DismissReason.timer) { window.location.replace(errorPageURL) }
-    })
+    }).then((result) => { if (result.dismiss === Swal.DismissReason.timer) { window.location.replace(errorPageURL) } })
 }
 
 // Finish the exam successfully
@@ -339,20 +338,3 @@ const Toast = Swal.mixin({
     showConfirmButton: false,
     timer: 3000
 });
-
-// function hideSidebar() {
-//     var secondsRemaining = 3
-//     var sidebarInterval = setInterval(function () {
-//         --secondsRemaining
-//         if (secondsRemaining == 0) {
-//             clearInterval(sidebarInterval);
-//             if ($('body').hasClass('control-sidebar-slide-open')) {
-//                 $('#toggle_sidebar').trigger('click')
-//             }
-//         }
-//     }, 1000);
-// }
-
-document.addEventListener("expanded.lte.controlsidebar", function () {
-    console.log('here')
-})

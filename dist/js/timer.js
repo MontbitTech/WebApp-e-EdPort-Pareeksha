@@ -14,6 +14,7 @@ function startTimer(hh = 0, mm = 15, ss = 30) {
             }
             else {
                 if (hh == 0 && mm == 15 && ss == 0) { $('#timer').css('color', 'red'); proctorSpeak('lessTimeRemaining') }
+                if (examTerminated) { window.location.replace(errorPageURL) }
             }
             $('#timer').html((hh < 10 ? '0' + hh : hh) + ':' + (mm < 10 ? '0' + mm : mm) + ':' + (ss < 10 ? '0' + ss : ss))
         }
