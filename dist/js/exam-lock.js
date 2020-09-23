@@ -5,23 +5,23 @@ var proctorLanguage = 'hindi'
 
 // Full Screen while giving exam
 var keepFullScreen = true
-var fullScreenExitAttempts = 2
+var fullScreenExitAttempts = 3
 
 // Multitasking while giving exam
 var blockMultitasking = true
-var multitaskingAttempts = 2
+var multitaskingAttempts = 3
 
 // Capture and save user image while giving exam
 var userImageCapture = true
 
 // User Video Tracking while giving exam
 var userVideoTracking = true
-var userNotAloneWarningCount = 2
-var userNotVisibleWarningCount = 2
+var userNotAloneWarningCount = 3
+var userNotVisibleWarningCount = 3
 
 // User Audio Tracking while giving exam
 var userAudioTracking = true
-var userAudioWarningCount = 2
+var userAudioWarningCount = 3
 
 // Keyboard usage while giving exam
 var blockKeyboard = true
@@ -58,21 +58,21 @@ var audioVideoSupportedByUser = false
 var d = {
     'lessTimeRemaining': {
         0: 'less time remaining',
-        1: 'hurry up, exam time is about to finish',
-        2: 'hurry up, very less time remaining',
-        3: 'hurry up, the exam is about to finish soon',
+        1: 'hurry up! exam time, is about to finish!',
+        2: 'hurry up! very less time remaining!',
+        3: 'hurry! the exam, is about to finish soon!',
     },
     'fullScreenWarning': {
         0: 'fullscreen exit',
-        1: 'do not exit the full screen',
-        2: 'remain in full screen while giving exam',
-        3: 'please do not switch from full screen mode while giving exam'
+        1: 'do not! do not exit, the full screen!',
+        2: 'remain in full screen, while giving exam!',
+        3: 'please do not switch! from full screen mode!'
     },
     'multitaskingWarning': {
         0: 'tab/browser switch',
-        1: 'avoid multitasking while giving exam',
-        2: 'kindly do not switch tabs or applications',
-        3: 'focus only on your exam'
+        1: 'avoid multitasking! while giving exam',
+        2: 'kindly do not switch! tabs or applications!',
+        3: 'focus! only on your exam'
     },
     'userNotAloneWarning': {
         0: 'not alone',
@@ -90,7 +90,7 @@ var d = {
         0: 'noise',
         1: 'please stay quiet',
         2: 'do not make noise while giving exam',
-        3: 'remain quiet!'
+        3: 'don\'t talk! remain quiet!'
     },
     'keyboardUsed': {
         0: 'keyboard used',
@@ -227,7 +227,7 @@ function toggleChecked(qn) {
 async function gatherUserDetail() {
     const { value: email } = await Swal.fire({
         icon: 'question',
-        title: 'Provide Email ID',
+        title: 'Registered Email ID',
         input: 'email',
         inputPlaceholder: 'Enter your registered email ID',
         inputValue: 'correct@user.com',
