@@ -154,20 +154,17 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
                 <div class="card-body">
                   <h3 class="card-title">In case you fail to adhere to the following guidelines, your attempt for this
                     examination would be discarded. Kindly read and follow the points sincerely.</h3><br /><br />
-
                   <h3 class="card-title">Proctored Examination Guideline:</h3>
                   <p class="card-text">
                     1. You will be responsible for ensuring proper lighting so that your face is visible in the
                     webcam.<br />
                     2. You will be responsible for ensuring that you remain alone while giving the exam.
                   </p>
-
                   <h3 class="card-title">Device Usage Guideline:</h3>
                   <p class="card-text">
                     1. You will not be allowed to switch applications once the exam begins.<br />
                     2. You will not be allowed to exit the full screen once the exam begins.
                   </p>
-
                   <p id="start_exam_button" style="min-width:100%;text-align:center;display:none;"><a href="#"
                       onclick="startExam()" class="btn btn-danger"><b>Start Examination</b></a>
                   </p>
@@ -201,7 +198,6 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
 
     <!-- Main Footer -->
     <footer class="main-footer" style="text-align: center; padding:5px;">
-
       <span id="submitButton" style="visibility:hidden;">
         <button type="button" onclick=finishExam() class="btn btn-success"><i class="fas fa-paper-plane"></i>
           &nbsp;Finish </button>
@@ -254,7 +250,7 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
 
   <!-- Getting Question Paper JSON -->
   <script>
-    var data = [
+    var questions = [
       {
         question: "_______ is the practice and precautions taken to protect valuable information from unauthorized access, recording, disclosure or destruction.",
         options: ["Network Security", "Database Security", "Information Security", "Physical Security"]
@@ -295,6 +291,35 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
         question: "Possible threat to any information cannot be _______",
         options: ["reduced", "transferred", "protected", "ignored"]
       },
+    ]
+
+    var examProperties = [
+      { keepFullScreen: true },
+      { fullScreenExitAttempts: 3 },
+      { blockMultitasking: true },
+      { multitaskingAttempts: 3 },
+      { userImageCapture: true },
+      { userVideoTracking: true },
+      { userNotAloneWarningCount: 3 },
+      { userNotVisibleWarningCount: 3 },
+      { userAudioTracking: true },
+      { userAudioWarningCount: 3 },
+      { blockKeyboard: true },
+      { blockRightClick: true },
+      { timeBound: true },
+    ]
+
+    var answers = [
+      { 1: [3] },
+      { 2: [4] },
+      { 3: [1] },
+      { 4: [1] },
+      { 5: [2] },
+      { 6: [3] },
+      { 7: [4] },
+      { 8: [2] },
+      { 9: [3] },
+      { 10: [4] },
     ]
   </script>
 </body>

@@ -41,14 +41,19 @@ var examTerminationReason = ''
 var examPaused = true
 var examPausedReason = ''
 
+// Exam finish
+var examFinished = false
+
 // Examination URLs
 var displayResultURL = ''
 var errorPageURL = ''
 
 // Global Variables
 var qc = 0
+var oc = 0
 var audioVideoAllowedByUser = false
 var audioVideoSupportedByUser = false
+var finalResponse = new Array()
 
 // Proctor Speech Dictionary
 // TODO: Make list of all warnings in 'hindi' and 'english'
@@ -60,43 +65,43 @@ var d = {
         3: 'hurry the exam is about to finish soon',
     },
     'fullScreenWarning': {
-        0: 'fullscreen exit',
+        0: 'Fullscreen Exit',
         1: 'do not exit the full screen',
         2: 'remain in full screen while giving exam',
         3: 'please do not switch from full screen mode'
     },
     'multitaskingWarning': {
-        0: 'tab/browser switch',
+        0: 'Tab/Browser Switch',
         1: 'avoid multitasking while giving exam',
         2: 'kindly do not switch tabs or applications',
         3: 'focus only on your exam'
     },
     'userNotAloneWarning': {
-        0: 'not alone',
+        0: 'Not Alone',
         1: 'remain alone while giving exam',
         2: 'kindly do not involve others in your exam',
         3: 'stay alone while you are giving exam'
     },
     'userNotVisibleWarning': {
-        0: 'not visible',
+        0: 'Not Visible',
         1: 'always stay in front of camera while giving exam',
         2: 'please stay in front of camera and ensure proper lighting',
         3: 'remain in front of the camera'
     },
     'userAudioWarning': {
-        0: 'noise',
+        0: 'Too Noisy',
         1: 'please stay quiet',
         2: 'do not make noise while giving exam',
         3: 'don\'t talk! remain quiet'
     },
     'keyboardUsed': {
-        0: 'keyboard used',
+        0: 'Keyboard Used',
         1: 'please do not use keyboard',
         2: 'do not use keyboard while giving exam',
         3: 'using keyboard is not allowed'
     },
     'rightClickUsed': {
-        0: 'right-click used',
+        0: 'Right-Click Used',
         1: 'please do not use right-click',
         2: 'do not use right-click while giving exam',
         3: 'using right-click is not allowed'
@@ -182,6 +187,7 @@ function trackRightClick() {
 // Add question for each question in exam
 function displayQuestion(q) {
     ++qc
+    oc = 0
     $('#questions').append('<div id="question' + qc + '" style="padding-top:60px;" class="col-lg-12"><div id="q' + qc + '" class="card"></div></div>')
     $('#q' + qc).append('<div class="card-header"><h3 class="card-title">Question ' + qc + '</h3><div class="card-tools"><button id="q' + qc + '_flag" type="button" onclick="toggleFlag(' + qc + ')" class="btn btn-tool"><i class="fas fa-flag"> Flag</i></button><button id="q' + qc + '_checked" type="button" onclick="toggleChecked(' + qc + ')" class="btn btn-tool"><i class="fas fa-check-double"> Checked</i></button></div ></div>')
     $('#q' + qc).append('<div id="q' + qc + '_body" class="card-body"><h6 class= "card-title">' + q.question + '</h6><br/><br/></div>')
@@ -191,7 +197,8 @@ function displayQuestion(q) {
 
 // Add option for each option in question
 function populateOptions(o) {
-    $('#q' + qc + '_body').append('<div class="form-check"><input class= "form-check-input" type = "checkbox" ><label class="form-check-label">' + o + '</label></div >')
+    ++oc
+    $('#q' + qc + '_body').append('<div class="form-check"><input class= "form-check-input" type="checkbox" placeholder="' + qc + ':' + oc + '" ><label class="form-check-label">' + o + '</label></div >')
 }
 
 // Toggle flag for questions
@@ -269,13 +276,16 @@ async function startExam() {
     if (blockRightClick) (trackRightClick())
 
     // Load questions
-    data.forEach(displayQuestion)
+    questions.forEach(displayQuestion)
     $('#submitButton').css('visibility', 'visible')
 
     // Start timer
     examPaused = false
     if (timeBound) { startTimer() }
     Toast.fire({ icon: 'success', title: 'Proctor joined.' })
+
+    //Auto-save user response
+    saveResponse()
 }
 
 // End the exam upon encountering system issues
@@ -314,6 +324,7 @@ function pauseExam() {
     $('#pauseExam').modal({ backdrop: 'static', keyboard: false })
     $('#pauseExam').modal('show')
     $('#toggle_sidebar').trigger('click')
+    prepareResponse()
 }
 
 // Resume the exam upon user confirmation
@@ -345,6 +356,42 @@ function finishExam(m = '') {
     }).then((result) => {
         if (result.dismiss === Swal.DismissReason.timer) { window.location.replace(displayResultURL) }
     })
+}
+
+// Form response JSON
+function prepareResponse() {
+    finalResponse = []
+    userResponse = $('input[type=checkbox]:checked')
+    for (i = 0; i < userResponse.length; i++) {
+        res = userResponse[i]['placeholder']
+        res = res.split(':')
+        if (res[0] in finalResponse) { finalResponse[res[0]] += res[1] }
+        else { finalResponse[res[0]] = res[1] }
+    }
+}
+
+// Update user response summary
+function updateResponseSummary() {
+
+}
+
+//Push user response to server
+function pushResponseToServer() {
+    return false
+}
+
+// Save user response every few seconds --> exponential back-off
+function saveResponse() {
+    var autoSaveInterval = setInterval(function () {
+        if (!(examPaused)) {
+            if (examFinished) { clearInterval(autoSaveInterval); return }
+            prepareResponse()
+            updateResponseSummary()
+            online = pushResponseToServer()
+            if (!online) { Toast.fire({ icon: 'error', title: 'Internet Unavailable! Retrying...', timer: 30000 }) }
+
+        }
+    }, 30000);
 }
 
 // Miscellaneous UI/UX + Code Clean
