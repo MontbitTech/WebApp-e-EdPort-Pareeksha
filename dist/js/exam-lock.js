@@ -1,7 +1,4 @@
-// Setting exam parameters
-
-// Proctor Language 'hindi' OR 'english'
-var proctorLanguage = 'hindi'
+// Default exam parameters
 
 // Full Screen while giving exam
 var keepFullScreen = true
@@ -58,21 +55,21 @@ var audioVideoSupportedByUser = false
 var d = {
     'lessTimeRemaining': {
         0: 'less time remaining',
-        1: 'hurry up! exam time, is about to finish!',
-        2: 'hurry up! very less time remaining!',
-        3: 'hurry! the exam, is about to finish soon!',
+        1: 'hurry up exam time is about to finish',
+        2: 'hurry up very less time remaining',
+        3: 'hurry the exam is about to finish soon',
     },
     'fullScreenWarning': {
         0: 'fullscreen exit',
-        1: 'do not! do not exit, the full screen!',
-        2: 'remain in full screen, while giving exam!',
-        3: 'please do not switch! from full screen mode!'
+        1: 'do not exit the full screen',
+        2: 'remain in full screen while giving exam',
+        3: 'please do not switch from full screen mode'
     },
     'multitaskingWarning': {
         0: 'tab/browser switch',
-        1: 'avoid multitasking! while giving exam',
-        2: 'kindly do not switch! tabs or applications!',
-        3: 'focus! only on your exam'
+        1: 'avoid multitasking while giving exam',
+        2: 'kindly do not switch tabs or applications',
+        3: 'focus only on your exam'
     },
     'userNotAloneWarning': {
         0: 'not alone',
@@ -90,7 +87,7 @@ var d = {
         0: 'noise',
         1: 'please stay quiet',
         2: 'do not make noise while giving exam',
-        3: 'don\'t talk! remain quiet!'
+        3: 'don\'t talk! remain quiet'
     },
     'keyboardUsed': {
         0: 'keyboard used',
@@ -278,6 +275,7 @@ async function startExam() {
     // Start timer
     examPaused = false
     if (timeBound) { startTimer() }
+    Toast.fire({ icon: 'success', title: 'Proctor joined.' })
 }
 
 // End the exam upon encountering system issues

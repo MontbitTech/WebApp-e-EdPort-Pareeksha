@@ -49,7 +49,6 @@ function proctorVideo() {
         const detections = await faceapi.detectAllFaces(videoFeed, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions()
         videoAssistantAI(detections)
     }, 1500)
-    Toast.fire({ icon: 'success', title: 'Successfully connected with online examiner (proctor).' })
 }
 
 // AI assisted proctor video monitoring
