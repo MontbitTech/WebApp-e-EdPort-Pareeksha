@@ -257,6 +257,7 @@ async function startExam() {
     // Prepare environment
     $('#start_exam_button').remove()
     $('#guidelines_button').removeClass('fa-circle').addClass('text-info fa-check-circle')
+    $('#toggle_sidebar').addClass('text-info')
     if (userVideoTracking) {
         if (audioVideoAllowedByUser && audioVideoAllowedByUser) { proctorVideo() }
         else { if (!audioVideoSupportedByUser) { return endExam('cameraNotFound') } else { return endExam('cameraNotAllowed') } }
