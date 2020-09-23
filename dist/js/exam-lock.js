@@ -41,7 +41,7 @@ var examTerminated = false
 var examTerminationReason = ''
 
 // Exam pause
-var examPaused = false
+var examPaused = true
 var examPausedReason = ''
 
 // Examination URLs
@@ -50,6 +50,8 @@ var errorPageURL = ''
 
 // Global Variables
 var qc = 0
+var audioVideoAllowedByUser = false
+var audioVideoSupportedByUser = false
 
 // Proctor Speech Dictionary
 // TODO: Make list of all warnings in 'hindi' and 'english'
@@ -88,7 +90,7 @@ var d = {
         0: 'noise',
         1: 'please stay quiet',
         2: 'do not make noise while giving exam',
-        3: 'shhhh! remain quiet!'
+        3: 'remain quiet!'
     },
     'keyboardUsed': {
         0: 'keyboard used',
@@ -118,22 +120,22 @@ function gotoFullScreen() {
 // Track switching of full screen
 function monitorFullScreen() {
     document.addEventListener('fullscreenchange', (event) => {
-        if (!document.fullscreenElement) {
-            --fullScreenExitAttempts
-            if (fullScreenExitAttempts <= 0) {
-                examTerminated = true
-                examTerminationReason = 'Closed full screen'
-                terminateExam()
-            }
-            else {
-                // Proctor Warning
-                proctorLog('fullScreenWarning')
-                proctorSpeak('fullScreenWarning')
-                // Change Warning
-                $('.modal-body').empty().text('You have attempted switching from full screen. This action is not allowed while giving exam: ' + fullScreenExitAttempts + ' attempt(s) remaining.')
-                // Pause Exam
-                pauseExam()
+        if (!examPaused) {
+            if (!document.fullscreenElement) {
+                --fullScreenExitAttempts
+                if (fullScreenExitAttempts <= 0) {
+                    terminateExam('Closed full screen')
+                }
+                else {
+                    // Proctor Warning
+                    proctorLog('fullScreenWarning')
+                    proctorSpeak('fullScreenWarning')
+                    // Change Warning
+                    $('.modal-body').empty().text('You have attempted switching from full screen. This action is not allowed while giving exam: ' + fullScreenExitAttempts + ' attempt(s) remaining.')
+                    // Pause Exam
+                    pauseExam()
 
+                }
             }
         }
     })
@@ -142,20 +144,20 @@ function monitorFullScreen() {
 //Track switching of tab/application
 function trackSwitchTabApplication() {
     $(window).blur(function () {
-        --multitaskingAttempts
-        if (multitaskingAttempts <= 0) {
-            examTerminated = true
-            examTerminationReason = 'Switched tab/browser'
-            terminateExam()
-        }
-        else {
-            // Proctor Warning
-            proctorLog('multitaskingWarning')
-            proctorSpeak('multitaskingWarning')
-            // Change Warning
-            $('.modal-body').empty().text('You have attempted switching tab/browser. This action is not allowed while giving exam: ' + multitaskingAttempts + ' attempt(s) remaining.')
-            // Pause Exam
-            pauseExam()
+        if (!examPaused) {
+            --multitaskingAttempts
+            if (multitaskingAttempts <= 0) {
+                terminateExam('Switched tab/browser')
+            }
+            else {
+                // Proctor Warning
+                proctorLog('multitaskingWarning')
+                proctorSpeak('multitaskingWarning')
+                // Change Warning
+                $('.modal-body').empty().text('You have attempted switching tab/browser. This action is not allowed while giving exam: ' + multitaskingAttempts + ' attempt(s) remaining.')
+                // Pause Exam
+                pauseExam()
+            }
         }
     })
 }
@@ -163,16 +165,20 @@ function trackSwitchTabApplication() {
 // Track Keyboard usage
 function trackKeyboard() {
     document.addEventListener("keydown", function (e) {
-        e.preventDefault()
-        proctorLog('keyboardUsed')
+        if (!examPaused) {
+            e.preventDefault()
+            proctorLog('keyboardUsed')
+        }
     })
 }
 
 // Track Right Click usage
 function trackRightClick() {
     $(document).bind("contextmenu", function (e) {
-        proctorLog('rightClickUsed')
-        return false
+        if (!examPaused) {
+            proctorLog('rightClickUsed')
+            return false
+        }
     })
 }
 
@@ -220,7 +226,8 @@ function toggleChecked(qn) {
 // Gather user detail
 async function gatherUserDetail() {
     const { value: email } = await Swal.fire({
-        title: 'Input email ID',
+        icon: 'question',
+        title: 'Provide Email ID',
         input: 'email',
         inputPlaceholder: 'Enter your registered email ID',
         inputValue: 'correct@user.com',
@@ -238,23 +245,26 @@ function checkValidUser(email) {
     // TODO: server side check user
     if (email === 'correct@user.com') {
         // TODO: Update username and examination code
+        return acquireUserPermissionHelper()
     }
     else {
-        ErrorBox.fire({
-            timer: 5000, allowOutsideClick: false, allowEscapeKey: false, title: 'Incorrect Details!', html: 'The email ID provided by you is incorrect. Kindly enter your registered email ID.'
-        }).then((result) => {
-            if (result.dismiss === Swal.DismissReason.timer) { window.location.replace(errorPageURL) }
-        })
+        endExam('userDetailsIncorrect')
     }
 }
 
 // Start the exam upon button click
-function startExam() {
+async function startExam() {
     // Prepare environment
     $('#start_exam_button').remove()
     $('#guidelines_button').removeClass('fa-circle').addClass('text-info fa-check-circle')
-    if (userVideoTracking) { proctorVideo() }
-    if (userAudioTracking) { proctorAudio() }
+    if (userVideoTracking) {
+        if (audioVideoAllowedByUser && audioVideoAllowedByUser) { proctorVideo() }
+        else { if (!audioVideoSupportedByUser) { return endExam('cameraNotFound') } else { return endExam('cameraNotAllowed') } }
+    }
+    if (userAudioTracking) {
+        if (audioVideoAllowedByUser && audioVideoAllowedByUser) { proctorAudio() }
+        else { if (!audioVideoSupportedByUser) { return endExam('microphoneNotFound') } else { return endExam('microphoneNotAllowed') } }
+    }
     if (keepFullScreen) { gotoFullScreen() }
     if (blockMultitasking) { trackSwitchTabApplication() }
     if (blockKeyboard) { trackKeyboard() }
@@ -265,6 +275,7 @@ function startExam() {
     $('#submitButton').css('visibility', 'visible')
 
     // Start timer
+    examPaused = false
     if (timeBound) { startTimer() }
 }
 
@@ -273,18 +284,28 @@ function endExam(reason) {
     if (reason == 'cameraNotAllowed') {
         ErrorBox.fire({
             timer: 10000, allowOutsideClick: false, allowEscapeKey: false, title: 'Cannot Begin Exam!', html: 'You cannot begin the exam without allowing access to camera.'
-        }).then((result) => {
-            if (result.dismiss === Swal.DismissReason.timer) { window.location.replace(errorPageURL) }
-        })
+        }).then((result) => { if (result.dismiss === Swal.DismissReason.timer) { window.location.replace(errorPageURL) } })
     }
     if (reason == 'cameraNotFound') {
         ErrorBox.fire({
             timer: 10000, allowOutsideClick: false, allowEscapeKey: false, title: 'Cannot Begin Exam!', html: 'You cannot give the exam on a device which does not have camera'
-        }).then((result) => {
-            if (result.dismiss === Swal.DismissReason.timer) { window.location.replace(errorPageURL) }
-        })
+        }).then((result) => { if (result.dismiss === Swal.DismissReason.timer) { window.location.replace(errorPageURL) } })
     }
-
+    if (reason == 'microphoneNotAllowed') {
+        ErrorBox.fire({
+            timer: 10000, allowOutsideClick: false, allowEscapeKey: false, title: 'Cannot Begin Exam!', html: 'You cannot begin the exam without allowing access to microphone.'
+        }).then((result) => { if (result.dismiss === Swal.DismissReason.timer) { window.location.replace(errorPageURL) } })
+    }
+    if (reason == 'microphoneNotFound') {
+        ErrorBox.fire({
+            timer: 10000, allowOutsideClick: false, allowEscapeKey: false, title: 'Cannot Begin Exam!', html: 'You cannot give the exam on a device which does not have microphone.'
+        }).then((result) => { if (result.dismiss === Swal.DismissReason.timer) { window.location.replace(errorPageURL) } })
+    }
+    if (reason == 'userDetailsIncorrect') {
+        ErrorBox.fire({
+            timer: 10000, allowOutsideClick: false, allowEscapeKey: false, title: 'Incorrect Details!', html: 'The email ID provided by you is incorrect. Kindly enter your registered email ID.'
+        }).then((result) => { if (result.dismiss === Swal.DismissReason.timer) { window.location.replace(errorPageURL) } })
+    }
 }
 
 // Pause the exam due to user actions
@@ -306,10 +327,12 @@ function resumeExam() {
 }
 
 // Terminate the exam due to repeated user actions
-function terminateExam() {
+function terminateExam(examTerminationReason) {
     // Submit the current state
     // Set exam as terminated
     // Close the exam
+    examPaused = true
+    examTerminated = true
     ErrorBox.fire({
         timer: 10000, allowOutsideClick: false, allowEscapeKey: false, title: 'Examination Terminated!', html: 'You examination was terminated by the proctor. Reason: ' + examTerminationReason
     }).then((result) => { if (result.dismiss === Swal.DismissReason.timer) { window.location.replace(errorPageURL) } })
@@ -339,3 +362,50 @@ const Toast = Swal.mixin({
     showConfirmButton: false,
     timer: 3000
 });
+
+function acquireUserPermissionHelper() {
+    if (!(audioVideoAllowedByUser && audioVideoSupportedByUser)) {
+        Swal.queue([{
+            icon: 'info',
+            title: 'Allow Permissions',
+            text: 'Camera and microphone access might be needed for this examination. Kindly allow the access if prompted.',
+            confirmButtonText: 'Understood!',
+            showLoaderOnConfirm: true,
+            preConfirm: () => { return acquireUserPermissions() }
+        }])
+
+    }
+}
+
+async function acquireUserPermissions() {
+    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+    if (navigator.getUserMedia) {
+        navigator.getUserMedia({ audio: true, video: true },
+            function (stream) {
+                audioVideoAllowedByUser = true
+                audioVideoSupportedByUser = true
+                return acquireUserPermissionResult()
+            },
+            function (err) {
+                audioVideoAllowedByUser = false
+                return acquireUserPermissionResult()
+            }
+        );
+    }
+    else {
+        audioVideoSupportedByUser = false
+        return acquireUserPermissionResult()
+    }
+}
+
+function acquireUserPermissionResult() {
+    if (audioVideoAllowedByUser && audioVideoSupportedByUser) {
+        $('#start_exam_button').show()
+        return Swal.fire({ icon: 'success', title: 'Permissions Granted', text: 'Camera & Microphone Permissions Allowed!' })
+    }
+    else {
+        $('#start_exam_button').show()
+        return Swal.fire({ icon: 'warning', title: 'Permissions Dismissed', text: 'Camera & Microphone Permissions NOT Allowed!' })
+    }
+}
+

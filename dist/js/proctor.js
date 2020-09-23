@@ -1,31 +1,39 @@
 // Global variables
-const audioVideoFeed = document.getElementById('video')
+const videoFeed = document.getElementById('video')
 const isNotAlone = (currentValue) => currentValue > 1
 const isNotVisible = (currentValue) => currentValue < 1
 const isAloneVisible = (currentValue) => currentValue == 1
-var peopleCounts = [1, 1, 1, 1, 1, 1]
+var peopleCounts = new Array(10)
+peopleCounts.fill(1)
+const isNoisy = (currentValue) => currentValue > 40
+var audioLevels = new Array(100)
+audioLevels.fill(0)
 var examLog = []
 var elapsedTime = 0
 
 // Start webcam video stream
-function startVideo() {
+function startVideoFeed() {
     navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
     if (navigator.getUserMedia) {
-        navigator.getUserMedia({ audio: true, video: true },
+        navigator.getUserMedia({ audio: false, video: true },
             function (stream) {
-                audioVideoFeed.srcObject = stream;
-                audioVideoFeed.onloadedmetadata = function (e) {
-                    audioVideoFeed.play();
+                videoFeed.srcObject = stream;
+                videoFeed.onloadedmetadata = function (e) {
+                    videoFeed.play();
                 };
             },
             function (err) {
                 console.log("ERROR: The following error occurred: " + err.name);
-                endExam('cameraNotAllowed')
+                if (userVideoTracking) {
+                    endExam('cameraNotAllowed')
+                }
             }
         );
     } else {
         console.log("ERROR: getUserMedia not supported, try another device and give all necessary permissions.")
-        endExam('cameraNotFound')
+        if (userVideoTracking) {
+            endExam('cameraNotFound')
+        }
     }
 }
 
@@ -36,16 +44,16 @@ function proctorVideo() {
         faceapi.nets.faceLandmark68Net.loadFromUri('dist/js/models'),
         faceapi.nets.faceRecognitionNet.loadFromUri('dist/js/models'),
         faceapi.nets.faceExpressionNet.loadFromUri('dist/js/models')
-    ]).then(startVideo)
+    ]).then(startVideoFeed)
     setInterval(async () => {
-        const detections = await faceapi.detectAllFaces(audioVideoFeed, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions()
-        assistantAI(detections)
-    }, 2500)
+        const detections = await faceapi.detectAllFaces(videoFeed, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions()
+        videoAssistantAI(detections)
+    }, 1500)
     Toast.fire({ icon: 'success', title: 'Successfully connected with online examiner (proctor).' })
 }
 
 // AI assisted proctor video monitoring
-function assistantAI(detections) {
+function videoAssistantAI(detections) {
     if (!examPaused) {
         var peopleCount = detections.length
         var message = ''
@@ -62,11 +70,10 @@ function assistantAI(detections) {
         if (peopleCounts.every(isNotAlone)) {
             --userNotAloneWarningCount
             if (userNotAloneWarningCount <= 0) {
-                examTerminated = true
-                examTerminationReason += 'User not alone'
-                return terminateExam()
+                return terminateExam('User not alone')
             }
             else {
+                peopleCounts.fill(1)
                 // Proctor Warning
                 proctorLog('userNotAloneWarning')
                 proctorSpeak('userNotAloneWarning')
@@ -79,11 +86,10 @@ function assistantAI(detections) {
         else if (peopleCounts.every(isNotVisible)) {
             --userNotVisibleWarningCount
             if (userNotVisibleWarningCount <= 0) {
-                examTerminated = true
-                examTerminationReason += 'User not visible'
-                return terminateExam()
+                return terminateExam('User not visible')
             }
             else {
+                peopleCounts.fill(1)
                 // Proctor Warning
                 proctorLog('userNotVisibleWarning')
                 proctorSpeak('userNotVisibleWarning')
@@ -101,46 +107,69 @@ function assistantAI(detections) {
     }
 }
 
-// AI assisted proctor audio monitoring
+// Proctor audio as exam starts
 function proctorAudio() {
     navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
     if (navigator.getUserMedia) {
-        navigator.getUserMedia({ audio: true },
+        navigator.getUserMedia({ audio: true, video: false },
             function (stream) {
                 audioContext = new AudioContext();
                 analyser = audioContext.createAnalyser();
                 microphone = audioContext.createMediaStreamSource(stream);
                 javascriptNode = audioContext.createScriptProcessor(2048, 1, 1);
-
                 analyser.smoothingTimeConstant = 0.8;
                 analyser.fftSize = 1024;
-
                 microphone.connect(analyser);
                 analyser.connect(javascriptNode);
                 javascriptNode.connect(audioContext.destination);
-
                 javascriptNode.onaudioprocess = function () {
                     var array = new Uint8Array(analyser.frequencyBinCount);
                     analyser.getByteFrequencyData(array);
                     var values = 0;
-
                     var length = array.length;
                     for (var i = 0; i < length; i++) {
                         values += (array[i]);
                     }
-
-                    var average = values / length;
-
-                    if (Math.round(average - 40) > 50) {
-
-                    }
+                    audioAssistantAI(values / length)
                 }
             },
             function (err) {
-                console.log("The following error occured: " + err.name)
+                console.log("ERROR: The following error occurred: " + err.name)
+                if (userAudioTracking) {
+                    endExam('microphoneNotAllowed')
+                }
             });
     } else {
-        console.log("getUserMedia not supported");
+        console.log("getUserMedia not supported, try another device and give all necessary permissions.");
+        if (userAudioTracking) {
+            endExam('microphoneNotFound')
+        }
+    }
+}
+
+// AI assisted proctor audio monitoring
+function audioAssistantAI(detections) {
+    if (!examPaused) {
+        // Update the buffer array
+        audioLevels.unshift(detections)
+        audioLevels.pop()
+
+        if (audioLevels.every(isNoisy)) {
+            --userAudioWarningCount
+            if (userAudioWarningCount <= 0) {
+                return terminateExam('Noisy environment')
+            }
+            else {
+                audioLevels.fill(0)
+                // Proctor Warning
+                proctorLog('userAudioWarning')
+                proctorSpeak('userAudioWarning')
+                // Change Warning
+                $('.modal-body').empty().text('You must remain silent and ensure low noise around you while giving exam: ' + userAudioWarningCount + ' attempt(s) remaining.')
+                // Pause Exam
+                pauseExam()
+            }
+        }
     }
 }
 
