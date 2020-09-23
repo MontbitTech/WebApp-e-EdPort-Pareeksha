@@ -113,37 +113,39 @@ function proctorAudio() {
     if (navigator.getUserMedia) {
         navigator.getUserMedia({ audio: true, video: false },
             function (stream) {
-                audioContext = new AudioContext();
-                analyser = audioContext.createAnalyser();
-                microphone = audioContext.createMediaStreamSource(stream);
-                javascriptNode = audioContext.createScriptProcessor(2048, 1, 1);
-                analyser.smoothingTimeConstant = 0.8;
-                analyser.fftSize = 1024;
-                microphone.connect(analyser);
-                analyser.connect(javascriptNode);
-                javascriptNode.connect(audioContext.destination);
-                javascriptNode.onaudioprocess = function () {
-                    var array = new Uint8Array(analyser.frequencyBinCount);
-                    analyser.getByteFrequencyData(array);
-                    var values = 0;
-                    var length = array.length;
-                    for (var i = 0; i < length; i++) {
-                        values += (array[i]);
+                try {
+                    audioContext = new AudioContext();
+                    analyser = audioContext.createAnalyser();
+                    microphone = audioContext.createMediaStreamSource(stream);
+                    javascriptNode = audioContext.createScriptProcessor(2048, 1, 1);
+                    analyser.smoothingTimeConstant = 0.8;
+                    analyser.fftSize = 1024;
+                    microphone.connect(analyser);
+                    analyser.connect(javascriptNode);
+                    javascriptNode.connect(audioContext.destination);
+                    javascriptNode.onaudioprocess = function () {
+                        var array = new Uint8Array(analyser.frequencyBinCount);
+                        analyser.getByteFrequencyData(array);
+                        var values = 0;
+                        var length = array.length;
+                        for (var i = 0; i < length; i++) {
+                            values += (array[i]);
+                        }
+                        audioAssistantAI(values / length)
                     }
-                    audioAssistantAI(values / length)
                 }
+                catch (err) {
+                    $('#noise').html(err)
+                }
+
             },
             function (err) {
                 console.log("ERROR: The following error occurred: " + err.name)
-                if (userAudioTracking) {
-                    endExam('microphoneNotAllowed')
-                }
+                if (userAudioTracking) { endExam('microphoneNotAllowed') }
             });
     } else {
         console.log("getUserMedia not supported, try another device and give all necessary permissions.");
-        if (userAudioTracking) {
-            endExam('microphoneNotFound')
-        }
+        if (userAudioTracking) { endExam('microphoneNotFound') }
     }
 }
 
