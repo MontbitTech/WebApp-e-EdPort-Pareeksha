@@ -5,7 +5,7 @@ const isNotVisible = (currentValue) => currentValue < 1
 const isAloneVisible = (currentValue) => currentValue == 1
 var peopleCounts = new Array(10)
 peopleCounts.fill(1)
-const isNoisyBackground = (currentValue) => currentValue > 20
+const isNoisyBackground = (currentValue) => currentValue > 15
 var audioLevels = new Array(150)
 audioLevels.fill(0)
 var examLog = []
@@ -157,10 +157,10 @@ function audioAssistantAI(detections) {
         audioLevels.pop()
 
         average = audioLevels.reduce((a, b) => (a + b)) / audioLevels.length;
-        $('#noise').html('<i class="fa fa-2x fa-microphone-alt-slash" style="opacity:' + average / 40
+        $('#noise').html('<i class="fa fa-2x fa-microphone-alt-slash" style="opacity:' + average / 30
             + '"></i>')
 
-        if (audioLevels.every(isNoisyBackground) && average > 35) {
+        if (audioLevels.every(isNoisyBackground) && average > 30) {
             --userAudioWarningCount
             if (userAudioWarningCount <= 0) {
                 return terminateExam('Noisy environment')
