@@ -339,7 +339,7 @@ function terminateExam(examTerminationReason) {
     examPaused = true
     examTerminated = true
     ErrorBox.fire({
-        timer: 10000, allowOutsideClick: false, allowEscapeKey: false, title: 'Examination Terminated!', html: 'You examination was terminated by the proctor. Reason: ' + examTerminationReason
+        timer: 10000, allowOutsideClick: false, allowEscapeKey: false, title: 'Examination Terminated!', html: 'You examination was terminated by the proctor. Reason: <b>' + examTerminationReason + '</b>'
     }).then((result) => { if (result.dismiss === Swal.DismissReason.timer) { window.location.replace(errorPageURL) } })
 }
 
@@ -350,15 +350,28 @@ function finishExamConfirmation() {
     $('#finishExam').modal('show')
 }
 
-// Finish the exam successfully --> exponential back-off
-function finishExam(m = '') {
-
-    Swal.fire({
-        timer: 3000, allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, timerProgressBar: true,
-        icon: 'success', title: 'Successfully saved & submitted!', html: m + '<br/> You have completed this examination successfully.'
-    }).then((result) => {
-        if (result.dismiss === Swal.DismissReason.timer) { window.location.replace(displayResultURL) }
-    })
+// Finish the exam successfully with exponential back-off
+function finishExam(message = '', max = 10, delay = 1000) {
+    examPaused = true
+    examFinished = true
+    $('#questions').hide()
+    $('#finishExamBodyFooter').empty().html('<marquee>Saving your answers...</marquee>')
+    console.log('max', max, 'next delay', delay);
+    var result = pushResponseToServer(prepareResponse())
+    if (result) {
+        Swal.fire({
+            timer: 3000, allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, timerProgressBar: true,
+            icon: 'success', title: 'Successfully saved & submitted!', html: message + '<br/> You have completed this examination successfully.'
+        }).then((result) => { if (result.dismiss === Swal.DismissReason.timer) { window.location.replace(displayResultURL) } })
+    }
+    else {
+        Toast.fire({ icon: 'error', title: 'Internet Unavailable! Retrying...', timer: delay })
+        if (max > 0) { setTimeout(function () { finishExam(message, --max, delay * 2); }, delay + Math.random() * 100); }
+        else {
+            Toast.fire({ icon: 'error', title: 'Retrying Submission...', timer: delay })
+            finishExam(message, max * 10, delay = 1000)
+        }
+    }
 }
 
 // Form response JSON
@@ -381,14 +394,13 @@ function updateResponseSummary(finalResponse) {
     $('#totalQuestionCount').text(qc)
     $('#attemptedQuestionCount').text(finalResponse.filter(Boolean).length)
     $('#remainingQuestionCount').text(qc - finalResponse.filter(Boolean).length)
-    console.log(finalResponse)
     return finalResponse
 }
 
 //Push user response to server
 function pushResponseToServer(finalResponse) {
     if (finalResponse) {
-        return Math.random() >= 0.5
+        return Math.random() >= 0.9
     }
 }
 
@@ -399,9 +411,8 @@ function saveResponse() {
             if (examFinished) { clearInterval(autoSaveInterval); return }
             online = pushResponseToServer(updateResponseSummary(prepareResponse()))
             if (!online) { Toast.fire({ icon: 'error', title: 'Internet Unavailable! Retrying...', timer: 5000 }) }
-            else { Toast.fire({ icon: 'success', title: 'Auto-saved on server', timer: 1000 }) }
         }
-    }, 5000);
+    }, 30000);
 }
 
 // Miscellaneous UI/UX + Code Clean

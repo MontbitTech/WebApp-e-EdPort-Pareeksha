@@ -1,4 +1,4 @@
-function startTimer(hh = 0, mm = 15, ss = 30) {
+function startTimer(hh = 0, mm = 0, ss = 30) {
     var secondsRemaining = hh * 60 * 60 + mm * 60 + ss;
     var timerInterval = setInterval(function () {
         if (!examPaused) {
@@ -8,7 +8,7 @@ function startTimer(hh = 0, mm = 15, ss = 30) {
             --secondsRemaining;
             ++elapsedTime;
 
-            if (secondsRemaining == 0) {
+            if (secondsRemaining == -1) {
                 clearInterval(timerInterval)
                 finishExam('Time Over')
             }
