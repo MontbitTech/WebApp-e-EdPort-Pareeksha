@@ -199,7 +199,8 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
     <!-- Main Footer -->
     <footer class="main-footer" style="text-align: center; padding:5px;">
       <span id="submitButton" style="visibility:hidden;">
-        <button type="button" onclick=finishExam() class="btn btn-success"><i class="fas fa-paper-plane"></i>
+        <button type="button" onclick="finishExamConfirmation()" class=" btn btn-success"><i
+            class="fas fa-paper-plane"></i>
           &nbsp;Finish </button>
       </span>
     </footer>
@@ -210,16 +211,63 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
   <!-- Exam Pause -->
   <div class="modal fade" id="pauseExam">
     <div class="modal-dialog">
-      <div class="modal-content bg-secondary">
+      <div class="modal-content bg-danger">
         <div class="modal-header justify-content-center">
           <h4 class="modal-title">Termination Warning!</h4>
         </div>
-        <div class="modal-body">
+        <div id="pauseExamBody" class="modal-body">
           <p>You are not allowed to exit full-screen or switch tab/browser while giving the examination. If you do so
             repeatedly, the proctor would terminate this examination.</p>
         </div>
         <div class="modal-footer justify-content-center">
           <button type="button" onclick="resumeExam()" class=" btn btn-outline-light" data-dismiss="modal">OK</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+
+  <!-- Exam Finish Confirmation -->
+  <div class="modal fade" id="finishExam">
+    <div class="modal-dialog">
+      <div class="modal-content bg-danger">
+        <div class="modal-header justify-content-center">
+          <h4 class="modal-title">Finish Early?</h4>
+        </div>
+        <div class="modal-body">
+          <div id="finishExamBody">
+            <p>You are trying to finish the examination before the permitted time.<br />
+              Are you sure you want to finish this
+              examination?</p>
+          </div>
+          <div class="card bg-danger text-center">
+            <div class="card-header">
+              <h3 class="card-title">EXAMINATION SUBMISSION SUMMARY</h3>
+            </div>
+            <div class="card-body p-0">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th>Total</th>
+                    <th>Attempted</th>
+                    <th>Remaining</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td id="totalQuestionCount"></td>
+                    <td id="attemptedQuestionCount"></td>
+                    <td id="remainingQuestionCount"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer justify-content-center">
+          <button type="button" onclick="finishExam()" class=" btn btn-outline-light" data-dismiss="modal">YES</button>
+          <button type="button" class=" btn btn-outline-light" data-dismiss="modal">NO</button>
         </div>
       </div>
       <!-- /.modal-content -->
@@ -309,8 +357,8 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
       { timeBound: true },
     ]
 
-    var answers = [
-      { 1: [3] },
+    var response = [
+      { 1: [1, 3] },
       { 2: [4] },
       { 3: [1] },
       { 4: [1] },

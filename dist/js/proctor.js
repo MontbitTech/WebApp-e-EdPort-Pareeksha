@@ -76,10 +76,8 @@ function videoAssistantAI(detections) {
                 // Proctor Warning
                 proctorLog('userNotAloneWarning')
                 proctorSpeak('userNotAloneWarning')
-                // Change Warning
-                $('.modal-body').empty().text('You must be alone while giving exam: ' + userNotAloneWarningCount + ' attempt(s) remaining.')
                 // Pause Exam
-                return pauseExam()
+                return pauseExam('You must be alone while giving exam: ' + userNotAloneWarningCount + ' attempt(s) remaining.')
             }
         }
         else if (peopleCounts.every(isNotVisible)) {
@@ -92,10 +90,8 @@ function videoAssistantAI(detections) {
                 // Proctor Warning
                 proctorLog('userNotVisibleWarning')
                 proctorSpeak('userNotVisibleWarning')
-                // Change Warning
-                $('.modal-body').empty().text('You must be visible in camera while giving exam: ' + userNotVisibleWarningCount + ' attempt(s) remaining.')
                 // Pause Exam
-                return pauseExam()
+                return pauseExam('You must be visible in camera while giving exam: ' + userNotVisibleWarningCount + ' attempt(s) remaining.')
             }
         }
         else if (peopleCount == 1) {
@@ -169,10 +165,8 @@ function audioAssistantAI(detections) {
                 // Proctor Warning
                 proctorLog('userAudioWarning')
                 proctorSpeak('userAudioWarning')
-                // Change Warning
-                $('.modal-body').empty().text('You must remain silent and ensure low noise around you while giving exam: ' + userAudioWarningCount + ' attempt(s) remaining.')
                 // Pause Exam
-                pauseExam()
+                pauseExam('You must remain silent and ensure low noise around you while giving exam: ' + userAudioWarningCount + ' attempt(s) remaining.')
             }
         }
     }

@@ -56,7 +56,6 @@ var audioVideoSupportedByUser = false
 var finalResponse = new Array()
 
 // Proctor Speech Dictionary
-// TODO: Make list of all warnings in 'hindi' and 'english'
 var d = {
     'lessTimeRemaining': {
         0: 'less time remaining',
@@ -132,10 +131,8 @@ function monitorFullScreen() {
                     // Proctor Warning
                     proctorLog('fullScreenWarning')
                     proctorSpeak('fullScreenWarning')
-                    // Change Warning
-                    $('.modal-body').empty().text('You have attempted switching from full screen. This action is not allowed while giving exam: ' + fullScreenExitAttempts + ' attempt(s) remaining.')
                     // Pause Exam
-                    pauseExam()
+                    pauseExam('You have attempted switching from full screen. This action is not allowed while giving exam: ' + fullScreenExitAttempts + ' attempt(s) remaining.')
 
                 }
             }
@@ -155,10 +152,8 @@ function trackSwitchTabApplication() {
                 // Proctor Warning
                 proctorLog('multitaskingWarning')
                 proctorSpeak('multitaskingWarning')
-                // Change Warning
-                $('.modal-body').empty().text('You have attempted switching tab/browser. This action is not allowed while giving exam: ' + multitaskingAttempts + ' attempt(s) remaining.')
                 // Pause Exam
-                pauseExam()
+                pauseExam('You have attempted switching tab/browser. This action is not allowed while giving exam: ' + multitaskingAttempts + ' attempt(s) remaining.')
             }
         }
     })
@@ -198,7 +193,7 @@ function displayQuestion(q) {
 // Add option for each option in question
 function populateOptions(o) {
     ++oc
-    $('#q' + qc + '_body').append('<div class="form-check"><input class= "form-check-input" type="checkbox" placeholder="' + qc + ':' + oc + '" ><label class="form-check-label">' + o + '</label></div >')
+    $('#q' + qc + '_body').append('<div class="form-check"><input class= "form-check-input" type="checkbox" id="' + qc + ':' + oc + '" ><label class="form-check-label">' + o + '</label></div >')
 }
 
 // Toggle flag for questions
@@ -318,13 +313,13 @@ function endExam(reason) {
 }
 
 // Pause the exam due to user actions
-function pauseExam() {
+function pauseExam(bodyMessage) {
     // Prepare environment
     examPaused = true
+    $('#pauseExamBody').empty().text(bodyMessage)
     $('#pauseExam').modal({ backdrop: 'static', keyboard: false })
     $('#pauseExam').modal('show')
     $('#toggle_sidebar').trigger('click')
-    prepareResponse()
 }
 
 // Resume the exam upon user confirmation
@@ -348,8 +343,16 @@ function terminateExam(examTerminationReason) {
     }).then((result) => { if (result.dismiss === Swal.DismissReason.timer) { window.location.replace(errorPageURL) } })
 }
 
-// Finish the exam successfully
+// Finish exam confirmation
+function finishExamConfirmation() {
+    updateResponseSummary(prepareResponse())
+    $('#finishExam').modal({ backdrop: 'static', keyboard: false })
+    $('#finishExam').modal('show')
+}
+
+// Finish the exam successfully --> exponential back-off
 function finishExam(m = '') {
+
     Swal.fire({
         timer: 3000, allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, timerProgressBar: true,
         icon: 'success', title: 'Successfully saved & submitted!', html: m + '<br/> You have completed this examination successfully.'
@@ -363,35 +366,42 @@ function prepareResponse() {
     finalResponse = []
     userResponse = $('input[type=checkbox]:checked')
     for (i = 0; i < userResponse.length; i++) {
-        res = userResponse[i]['placeholder']
+        res = userResponse[i]['id']
         res = res.split(':')
         if (res[0] in finalResponse) { finalResponse[res[0]] += res[1] }
         else { finalResponse[res[0]] = res[1] }
     }
+    return finalResponse
 }
 
 // Update user response summary
-function updateResponseSummary() {
-
+function updateResponseSummary(finalResponse) {
+    $('#finishExamBody').empty()
+    $('#finishExamBody').append('<p>You are trying to finish the examination before the permitted time. Are you sure you want to finish this examination?</p>')
+    $('#totalQuestionCount').text(qc)
+    $('#attemptedQuestionCount').text(finalResponse.filter(Boolean).length)
+    $('#remainingQuestionCount').text(qc - finalResponse.filter(Boolean).length)
+    console.log(finalResponse)
+    return finalResponse
 }
 
 //Push user response to server
-function pushResponseToServer() {
-    return false
+function pushResponseToServer(finalResponse) {
+    if (finalResponse) {
+        return Math.random() >= 0.5
+    }
 }
 
-// Save user response every few seconds --> exponential back-off
+// Save user response every few seconds 
 function saveResponse() {
     var autoSaveInterval = setInterval(function () {
         if (!(examPaused)) {
             if (examFinished) { clearInterval(autoSaveInterval); return }
-            prepareResponse()
-            updateResponseSummary()
-            online = pushResponseToServer()
-            if (!online) { Toast.fire({ icon: 'error', title: 'Internet Unavailable! Retrying...', timer: 30000 }) }
-
+            online = pushResponseToServer(updateResponseSummary(prepareResponse()))
+            if (!online) { Toast.fire({ icon: 'error', title: 'Internet Unavailable! Retrying...', timer: 5000 }) }
+            else { Toast.fire({ icon: 'success', title: 'Auto-saved on server', timer: 1000 }) }
         }
-    }, 30000);
+    }, 5000);
 }
 
 // Miscellaneous UI/UX + Code Clean
