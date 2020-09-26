@@ -334,13 +334,13 @@ function resumeExam() {
 // Terminate the exam due to repeated user actions
 function terminateExam(examTerminationReason) {
     // Submit the current state
+    $('#finishExamTitle').text('Examination Terminated!')
+    $('#finishExamBodyText').html('You examination was terminated by the proctor.Reason: <b>' + examTerminationReason + '</b>')
+    finishExamConfirmation()
+    finishExam()
     // Set exam as terminated
-    // Close the exam
     examPaused = true
     examTerminated = true
-    ErrorBox.fire({
-        timer: 10000, allowOutsideClick: false, allowEscapeKey: false, title: 'Examination Terminated!', html: 'You examination was terminated by the proctor. Reason: <b>' + examTerminationReason + '</b>'
-    }).then((result) => { if (result.dismiss === Swal.DismissReason.timer) { window.location.replace(errorPageURL) } })
 }
 
 // Finish exam confirmation
@@ -351,7 +351,7 @@ function finishExamConfirmation() {
 }
 
 // Finish the exam successfully with exponential back-off
-function finishExam(message = '', max = 10, delay = 1000) {
+function finishExam(max = 10, delay = 1000) {
     examPaused = true
     examFinished = true
     $('#questions').hide()
@@ -361,12 +361,12 @@ function finishExam(message = '', max = 10, delay = 1000) {
     if (result) {
         Swal.fire({
             timer: 3000, allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, timerProgressBar: true,
-            icon: 'success', title: 'Successfully saved & submitted!', html: message + '<br/> You have completed this examination successfully.'
+            icon: 'success', title: 'Saved & submitted!', html: '<br/>Your submission for this examination is recorded on the server.'
         }).then((result) => { if (result.dismiss === Swal.DismissReason.timer) { window.location.replace(displayResultURL) } })
     }
     else {
         Toast.fire({ icon: 'error', title: 'Internet Unavailable! Retrying...', timer: delay })
-        if (max > 0) { setTimeout(function () { finishExam(message, --max, delay * 2); }, delay + Math.random() * 100); }
+        if (max > 0) { setTimeout(function () { finishExam(--max, delay * 2); }, delay + Math.random() * 100); }
         else {
             Toast.fire({ icon: 'error', title: 'Retrying Submission...', timer: delay })
             finishExam(message, max * 10, delay = 1000)
