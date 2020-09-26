@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<!--
+This is a starter template page. Use this page to start your new project from
+scratch. This page gets rid of all links and provides the needed markup only.
+Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
+-->
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Pareeksha platform for conducting online examination.">
+    <meta name="theme-color" content="#343a40">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <meta property="og:url" content="https://e-edport.com/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="My Examination Performance - {Exam Code}" />
+    <meta property="og:description" content="Details of my result here..." />
+
+    <title>परीक्षा | {Examination Code} | Result</title>
+
+    <!-- Setting Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="dist/img/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="dist/img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="dist/img/favicon/favicon-16x16.png">
+    <link rel="manifest" href="dist/img/favicon/site.webmanifest">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css" media="none"
+        onload="if(media!='all')media='all'">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="dist/css/adminlte.min.css" media="none" onload="if(media!='all')media='all'">
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet" media="none"
+        onload="if(media!='all')media='all'">
+
+</head>
+
+<body onselectstart="return false" class="sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v8.0"
+        nonce="zlMIPSAZ"></script>
+    <div class="wrapper">
+        <!-- Navbar -->
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+            <!-- Left navbar links -->
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                </li>
+            </ul>
+            <!-- Right navbar links -->
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <div style="font-size: 1.5rem;" id="timer"></div>
+                </li>
+                <li class="nav-item">
+                    <a id="toggle_sidebar" class="nav-link" data-widget="control-sidebar" data-slide="true" href="#"
+                        role="button" title="View Proctor Logs">
+                        <i class="fas fa-user-shield fa-lg"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <!-- /.navbar -->
+
+        <!-- Main Sidebar Container -->
+        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+            <!-- Brand Logo -->
+            <a href="index3.html" class="brand-link">
+                <img src="dist/img/dps.png" alt="" class="brand-image" style="opacity: .9">
+                <span class="brand-text font-weight-light"> परीक्षा <span style="font-size: x-small;"> by
+                        e-EdPort</span></span>
+            </a>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+
+                <!-- Sidebar Menu -->
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+                        data-accordion="false" style="font-size:medium;">
+                        <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+                        <li class="nav-item has-treeview menu-open">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-puzzle-piece"></i>
+                                <p>
+                                    Result: {Exam Code}
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="#summary" class="nav-link">
+                                        <i id="guidelines_button" class="far fa-circle fa-sm nav-icon"></i>
+                                        <p> Summary</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#comparison" class="nav-link">
+                                        <i id="guidelines_button" class="far fa-circle fa-sm nav-icon"></i>
+                                        <p> Comparison</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#myStrength" class="nav-link">
+                                        <i id="guidelines_button" class="far fa-circle fa-sm nav-icon"></i>
+                                        <p> My Strength</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#myWeakness" class="nav-link">
+                                        <i id="guidelines_button" class="far fa-circle fa-sm nav-icon"></i>
+                                        <p> My Weakness</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item has-treeview">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-puzzle-piece"></i>
+                                <p>
+                                    Answer Key
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul id="questionList" class="nav nav-treeview">
+
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+                <!-- /.sidebar-menu -->
+            </div>
+            <!-- /.sidebar -->
+        </aside>
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <div class="content-header">
+                <div id="guidelines" class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1 class="m-0 text-dark">Welcome, {User}</h1>
+                        </div><!-- /.col -->
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right text-dark">
+                                <li class="m-0 breadcrumb-item">Pareeksha</li>
+                                <li class="m-0 breadcrumb-item">{Examination Code}</li>
+                            </ol>
+                        </div><!-- /.col -->
+                    </div><!-- /.row -->
+                </div><!-- /.container-fluid -->
+            </div>
+            <!-- /.content-header -->
+
+            <!-- Main content -->
+            <div class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div id="summary" class="card">
+                                <div class="card-header">
+                                    <h5 class="m-0">Examination Summary</h5>
+                                </div>
+                                <div class="card-body">
+
+                                </div>
+                                <div class="card-footer text-center">
+                                    <div class="fb-share-button"
+                                        data-href="https://developers.facebook.com/docs/plugins/" data-layout="button"
+                                        data-size="large"><a target="_blank"
+                                            href="https://www.facebook.com/sharer/sharer.php"
+                                            class="fb-xfbml-parse-ignore">Share</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="comparison" class="card">
+                        <div class="card-header">
+                            <h5 class="m-0">Classmate Comparison</h5>
+                        </div>
+                        <div class="card-body">
+
+                        </div>
+                    </div>
+                    <div id="strength" class="card">
+                        <div class="card-header">
+                            <h5 class="m-0">My Strength</h5>
+                        </div>
+                        <div class="card-body">
+
+                        </div>
+                    </div>
+                    <div id="weakness" class="card">
+                        <div class="card-header">
+                            <h5 class="m-0">My Weakness</h5>
+                        </div>
+                        <div class="card-body">
+
+                        </div>
+                    </div>
+                </div>
+                <!-- /.col-md-6 -->
+            </div>
+            <!-- /.row -->
+            <hr />
+            <div id="questions" class="row"></div>
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-light text-dark">
+        <!-- Control sidebar content goes here -->
+        <div id="proctor" class="p-3">
+            <h5 style="text-align:center;"><small><b><u>PROCTOR FEEDBACK</u></b></small></h5>
+            <div id="warning" style="min-height:40vh;max-height:40vh;font-size:small;overflow:scroll;"></div>
+        </div>
+    </aside>
+    <!-- /.control-sidebar -->
+    </div>
+
+    <!-- ./wrapper -->
+
+    <!-- REQUIRED SCRIPTS -->
+
+    <!-- jQuery -->
+    <script defer src="plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script defer src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- SweetAlert 2 -->
+    <script defer src="plugins/sweetalert2/sweetalert2.all.min.js"></script>
+    <!-- AdminLTE App -->
+    <script defer src="dist/js/adminlte.min.js"></script>
+    <!-- Lazy Image Load -->
+    <script defer src="plugins/lazysizes/lazysizes.min.js"></script>
+    <!-- Getting Question Paper JSON -->
+    <script>
+
+        var questions = [
+            {
+                question: "_______ is the practice and precautions taken to protect valuable information from unauthorized access, recording, disclosure or destruction.",
+                options: ["Network Security", "Database Security", "Information Security", "Physical Security"]
+            },
+            {
+                question: "From the options below, which of them is not a threat to information security?",
+                options: ["Disaster", "Eavesdropping", "Information leakage", "Unchanged default password"]
+            },
+            {
+                question: "From the options below, which of them is not a vulnerability to information security?",
+                options: ["flood", "without deleting data, disposal of storage media", "unchanged default password", "latest patches and updates not done"]
+            },
+            {
+                question: "_______ platforms are used for safety and protection of information in the cloud.",
+                options: ["Cloud workload protection platforms", "Cloud security protocols", "AWS", "One Drive"]
+            },
+            {
+                question: "Which of the following information security technology is used for avoiding browser-based hacking?",
+                options: ["Anti-malware in browsers", "Remote browser access", "Adware remover in browsers", "Incognito mode in a browser"]
+            },
+            {
+                question: "The full form of EDR is _______",
+                options: ["Endpoint Detection and recovery", "Early detection and response", "Endpoint Detection and response", "Endless Detection and Recovery"]
+            },
+            {
+                question: "_______ technology is used for analyzing and monitoring traffic in network and information flow.",
+                options: ["Cloud access security brokers (CASBs)", "Managed detection and response (MDR)", "Network Security Firewall", "Network traffic analysis (NTA)"]
+            },
+            {
+                question: "Compromising confidential information comes under _______",
+                options: ["Bug", "Threat", "Vulnerability", "Attack"]
+            },
+            {
+                question: "Lack of access control policy is a _______",
+                options: ["Bug", "Threat", "Vulnerability", "Attack"]
+            },
+            {
+                question: "Possible threat to any information cannot be _______",
+                options: ["reduced", "transferred", "protected", "ignored"]
+            },
+        ]
+
+        var examProperties = [
+            { keepFullScreen: true },
+            { fullScreenExitAttempts: 3 },
+            { blockMultitasking: true },
+            { multitaskingAttempts: 3 },
+            { userImageCapture: true },
+            { userVideoTracking: true },
+            { userNotAloneWarningCount: 3 },
+            { userNotVisibleWarningCount: 3 },
+            { userAudioTracking: true },
+            { userAudioWarningCount: 3 },
+            { blockKeyboard: true },
+            { blockRightClick: true },
+            { timeBound: true },
+        ]
+
+        var correctResponse = [
+            { 1: [1, 3] },
+            { 2: [4] },
+            { 3: [1] },
+            { 4: [1] },
+            { 5: [2] },
+            { 6: [3] },
+            { 7: [4] },
+            { 8: [2] },
+            { 9: [3] },
+            { 10: [4] },
+        ]
+
+        var userResponse = [
+            { 1: [1, 3] },
+            { 2: [4] },
+            { 3: [1] },
+            { 4: [1] },
+            { 5: [2] },
+            { 6: [3] },
+            { 7: [4] },
+            { 8: [2] },
+            { 9: [3] },
+            { 10: [4] },
+        ]
+
+    </script>
+</body>
+
+</html>

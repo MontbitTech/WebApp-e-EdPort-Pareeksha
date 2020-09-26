@@ -1,15 +1,28 @@
 // Global variables
+var peopleCounts = new Array(10).fill(1)
+var audioLevels = new Array(100).fill(0)
+var examLog = []
+var elapsedTime = 0
 const videoFeed = document.getElementById('video')
 const isNotAlone = (currentValue) => currentValue > 1
 const isNotVisible = (currentValue) => currentValue < 1
 const isAloneVisible = (currentValue) => currentValue == 1
-var peopleCounts = new Array(10)
-peopleCounts.fill(1)
-const isNoisyBackground = (currentValue) => currentValue > 15
-var audioLevels = new Array(150)
-audioLevels.fill(0)
-var examLog = []
-var elapsedTime = 0
+const isNoisyBackground = (currentValue) => currentValue > 10
+
+
+// Proctor video as exam starts
+function proctorVideo() {
+    Promise.all([
+        faceapi.nets.tinyFaceDetector.loadFromUri('dist/js/models'),
+        faceapi.nets.faceLandmark68Net.loadFromUri('dist/js/models'),
+        faceapi.nets.faceRecognitionNet.loadFromUri('dist/js/models'),
+        faceapi.nets.faceExpressionNet.loadFromUri('dist/js/models')
+    ]).then(startVideoFeed)
+    setInterval(async () => {
+        const detections = await faceapi.detectAllFaces(videoFeed, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions()
+        videoAssistantAI(detections)
+    }, 1500)
+}
 
 // Start webcam video stream
 function startVideoFeed() {
@@ -35,20 +48,6 @@ function startVideoFeed() {
             endExam('cameraNotFound')
         }
     }
-}
-
-// Proctor video as exam starts
-function proctorVideo() {
-    Promise.all([
-        faceapi.nets.tinyFaceDetector.loadFromUri('dist/js/models'),
-        faceapi.nets.faceLandmark68Net.loadFromUri('dist/js/models'),
-        faceapi.nets.faceRecognitionNet.loadFromUri('dist/js/models'),
-        faceapi.nets.faceExpressionNet.loadFromUri('dist/js/models')
-    ]).then(startVideoFeed)
-    setInterval(async () => {
-        const detections = await faceapi.detectAllFaces(videoFeed, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions()
-        videoAssistantAI(detections)
-    }, 1500)
 }
 
 // AI assisted proctor video monitoring
@@ -172,7 +171,7 @@ function audioAssistantAI(detections) {
     }
 }
 
-// Audio feedback for warnings
+// Voice feedback for warnings
 function proctorSpeak(warningCode) {
     var message = d[warningCode][Math.floor(Math.random() * 3) + 1]
     message = new SpeechSynthesisUtterance(message)

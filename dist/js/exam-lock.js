@@ -1,4 +1,110 @@
-// Default exam parameters
+// Dummy Data (Replace by API)
+var examProperties = [
+    { keepFullScreen: true },
+    { fullScreenExitAttempts: 3 },
+    { blockMultitasking: true },
+    { multitaskingAttempts: 3 },
+    { userImageCapture: true },
+    { userVideoTracking: true },
+    { userNotAloneWarningCount: 3 },
+    { userNotVisibleWarningCount: 3 },
+    { userAudioTracking: true },
+    { userAudioWarningCount: 3 },
+    { blockKeyboard: true },
+    { blockRightClick: true },
+    { timeBound: true },
+]
+
+var questions = [
+    {
+        question: "_______ is the practice and precautions taken to protect valuable information from unauthorized access, recording, disclosure or destruction.",
+        options: ["Network Security", "Database Security", "Information Security", "Physical Security"]
+    },
+    {
+        question: "From the options below, which of them is not a threat to information security?",
+        options: ["Disaster", "Eavesdropping", "Information leakage", "Unchanged default password"]
+    },
+    {
+        question: "From the options below, which of them is not a vulnerability to information security?",
+        options: ["flood", "without deleting data, disposal of storage media", "unchanged default password", "latest patches and updates not done"]
+    },
+    {
+        question: "_______ platforms are used for safety and protection of information in the cloud.",
+        options: ["Cloud workload protection platforms", "Cloud security protocols", "AWS", "One Drive"]
+    },
+    {
+        question: "Which of the following information security technology is used for avoiding browser-based hacking?",
+        options: ["Anti-malware in browsers", "Remote browser access", "Adware remover in browsers", "Incognito mode in a browser"]
+    },
+    {
+        question: "The full form of EDR is _______",
+        options: ["Endpoint Detection and recovery", "Early detection and response", "Endpoint Detection and response", "Endless Detection and Recovery"]
+    },
+    {
+        question: "_______ technology is used for analyzing and monitoring traffic in network and information flow.",
+        options: ["Cloud access security brokers (CASBs)", "Managed detection and response (MDR)", "Network Security Firewall", "Network traffic analysis (NTA)"]
+    },
+    {
+        question: "Compromising confidential information comes under _______",
+        options: ["Bug", "Threat", "Vulnerability", "Attack"]
+    },
+    {
+        question: "Lack of access control policy is a _______",
+        options: ["Bug", "Threat", "Vulnerability", "Attack"]
+    },
+    {
+        question: "Possible threat to any information cannot be _______",
+        options: ["reduced", "transferred", "protected", "ignored"]
+    },
+]
+
+var userPreviousResponse = [
+    {
+        question: 1,
+        response: [1, 3]
+    },
+    {
+        question: 2,
+        response: [4]
+    },
+    {
+        question: 3,
+        response: [1]
+    },
+    {
+        question: 4,
+        response: [1]
+    },
+    {
+        question: 5,
+        response: [2]
+    },
+    {
+        question: 6,
+        response: [3]
+    },
+    {
+        question: 7,
+        response: [4]
+    },
+    {
+        question: 8,
+        response: [2]
+    },
+    {
+        question: 9,
+        response: [3]
+    },
+    {
+        question: 10,
+        response: [4]
+    },
+]
+
+var userPreviousLog = []
+
+
+// Defining default exam parameters, irrespective of properties
 
 // Full Screen while giving exam
 var keepFullScreen = true
@@ -28,6 +134,7 @@ var blockRightClick = true
 
 // Time bound exam
 var timeBound = true
+var timeOver = false
 
 // System compatibility test
 var systemIncompatible = false
@@ -107,6 +214,26 @@ var d = {
     }
 }
 
+
+// ENVIRONMENT SETUP
+
+// Setting user environment based on exam properties
+function setEnvironment() {
+    keepFullScreen = examProperties.keepFullScreen
+    fullScreenExitAttempts = examProperties.fullScreenExitAttempts
+    blockMultitasking = examProperties.blockMultitasking
+    multitaskingAttempts = examProperties.multitaskingAttempts
+    userImageCapture = examProperties.userImageCapture
+    userVideoTracking = examProperties.userVideoTracking
+    userNotAloneWarningCount = examProperties.userNotAloneWarningCount
+    userNotVisibleWarningCount = examProperties.userNotVisibleWarningCount
+    userAudioTracking = examProperties.userAudioTracking
+    userAudioWarningCount = examProperties.userAudioWarningCount
+    blockKeyboard = examProperties.blockKeyboard
+    blockRightClick = examProperties.blockRightClick
+    timeBound = examProperties.timeBound
+}
+
 // Switch to full screen if defined by examiner
 function gotoFullScreen() {
     if (!document.fullscreenElement) {
@@ -114,7 +241,6 @@ function gotoFullScreen() {
             systemCompatible = false
             systemIncompatibleReason += 'Error attempting to enable full-screen mode: ${err.message} (${err.name})'
         })
-        monitorFullScreen()
     }
 }
 
@@ -179,48 +305,34 @@ function trackRightClick() {
     })
 }
 
-// Add question for each question in exam
-function displayQuestion(q) {
-    ++qc
-    oc = 0
-    $('#questions').append('<div id="question' + qc + '" style="padding-top:60px;" class="col-lg-12"><div id="q' + qc + '" class="card"></div></div>')
-    $('#q' + qc).append('<div class="card-header"><h3 class="card-title">Question ' + qc + '</h3><div class="card-tools"><button id="q' + qc + '_flag" type="button" onclick="toggleFlag(' + qc + ')" class="btn btn-tool"><i class="fas fa-flag"> Flag</i></button><button id="q' + qc + '_checked" type="button" onclick="toggleChecked(' + qc + ')" class="btn btn-tool"><i class="fas fa-check-double"> Checked</i></button></div ></div>')
-    $('#q' + qc).append('<div id="q' + qc + '_body" class="card-body"><h6 class= "card-title">' + q.question + '</h6><br/><br/></div>')
-    q.options.forEach(populateOptions)
-    $('#questionList').append('<li class="nav-item"><a href="#question' + qc + '" class="nav-link"><i id="question' + qc + '_button" class="far fa-circle text-warning fa-sm nav-icon"></i><p>&nbsp;Question ' + qc + '</p></a></li>')
+// Track Time
+function startTimer(hh = 3, mm = 0, ss = 0) {
+    let secondsRemaining = hh * 60 * 60 + mm * 60 + ss;
+    var timerInterval = setInterval(function () {
+        if (!examPaused) {
+            var hh = Math.floor(secondsRemaining / 60 / 60) % 24
+            var mm = Math.floor(secondsRemaining / 60) % 60
+            var ss = secondsRemaining % 60
+            --secondsRemaining;
+            ++elapsedTime;
+
+            if (secondsRemaining < 0) {
+                timeOver = true
+                clearInterval(timerInterval)
+                finishExamConfirmation()
+                finishExam('Time Over')
+            }
+            else {
+                if (hh == 0 && mm == 15 && ss == 0) { $('#timer').css('color', 'red'); proctorSpeak('lessTimeRemaining') }
+                if (examTerminated) { window.location.replace(displayResultURL) }
+            }
+            $('#timer').html((hh < 10 ? '0' + hh : hh) + ':' + (mm < 10 ? '0' + mm : mm) + ':' + (ss < 10 ? '0' + ss : ss))
+        }
+    }, 1000);
 }
 
-// Add option for each option in question
-function populateOptions(o) {
-    ++oc
-    $('#q' + qc + '_body').append('<div class="form-check"><input class= "form-check-input" type="checkbox" id="' + qc + ':' + oc + '" ><label class="form-check-label">' + o + '</label></div >')
-}
 
-// Toggle flag for questions
-function toggleFlag(qn) {
-    if ($('#q' + qn + '_checked').children('.fa-check-double').hasClass('text-success')) { toggleChecked(qn) }
-    if ($('#q' + qn + '_flag').children('.fa-flag').hasClass('text-danger')) {
-        $('#q' + qn + '_flag').children('.fa-flag').removeClass('text-danger')
-        $('#question' + qn + '_button').removeClass('text-danger fa-flag').addClass('text-warning fa-circle')
-    }
-    else {
-        $('#q' + qn + '_flag').children('.fa-flag').addClass('text-danger')
-        $('#question' + qn + '_button').removeClass('text-warning fa-circle').addClass('text-danger fa-flag')
-    }
-}
-
-// Toggle checked for questions
-function toggleChecked(qn) {
-    if ($('#q' + qn + '_flag').children('.fa-flag').hasClass('text-danger')) { toggleFlag(qn) }
-    if ($('#q' + qn + '_checked').children('.fa-check-double').hasClass('text-success')) {
-        $('#q' + qn + '_checked').children('.fa-check-double').removeClass('text-success')
-        $('#question' + qn + '_button').removeClass('text-danger fa-check-circle').addClass('text-warning fa-circle')
-    }
-    else {
-        $('#q' + qn + '_checked').children('.fa-check-double').addClass('text-success')
-        $('#question' + qn + '_button').removeClass('text-warning fa-circle').addClass('text-success fa-check-circle')
-    }
-}
+// CORE EXAMINATION SETUP
 
 // Gather user detail
 async function gatherUserDetail() {
@@ -245,18 +357,52 @@ function checkValidUser(email) {
     if (email === 'correct@user.com') {
         // TODO: Update username and examination code
         return acquireUserPermissionHelper()
+        // TODO: Pull exam properties
+        // TODO: Pull questions
+        // TODO: Pull userPreviousResponse
+        // TODO: Pull userPreviousLog
     }
     else {
         endExam('userDetailsIncorrect')
     }
 }
 
+// Add question for each question in exam
+function displayQuestion(q) {
+    ++qc
+    oc = 0
+    $('#questions').append('<div id="question' + qc + '" style="padding-top:60px;" class="col-lg-12"><div id="q' + qc + '" class="card"></div></div>')
+    $('#q' + qc).append('<div class="card-header"><h3 class="card-title">Question ' + qc + '</h3><div class="card-tools"><button id="q' + qc + '_flag" type="button" onclick="toggleFlag(' + qc + ')" class="btn btn-tool"><i class="fas fa-flag"> Flag</i></button><button id="q' + qc + '_checked" type="button" onclick="toggleChecked(' + qc + ')" class="btn btn-tool"><i class="fas fa-check-double"> Checked</i></button></div ></div>')
+    $('#q' + qc).append('<div id="q' + qc + '_body" class="card-body"><h6 class= "card-title">' + q.question + '</h6><br/><br/></div>')
+    q.options.forEach(populateOptions)
+    $('#questionList').append('<li class="nav-item"><a href="#question' + qc + '" class="nav-link"><i id="question' + qc + '_button" class="far fa-circle text-warning fa-sm nav-icon"></i><p>&nbsp;Question ' + qc + '</p></a></li>')
+}
+
+// Add option for each option in question
+function populateOptions(o) {
+    ++oc
+    $('#q' + qc + '_body').append('<div class="form-check"><input class= "form-check-input" type="checkbox" id="o_' + qc + '_' + oc + '" ><label class="form-check-label">' + o + '</label></div >')
+}
+
+// Add user response if present
+function displayUserResponse(r) {
+    for (var i = 0; i < r.response.length; i++) {
+        populateUserResponse(r.question, r.response[i]);
+    }
+}
+
+// Check mark the option if selected previously
+function populateUserResponse(q, c) {
+    document.getElementById('o_' + q + '_' + c).checked = true
+}
+
+
+// EXAMINATION START, END, PAUSE, RESUME, TERMINATE, FINISH
+
 // Start the exam upon button click
 async function startExam() {
     // Prepare environment
     $('#start_exam_button').remove()
-    $('#guidelines_button').removeClass('fa-circle').addClass('text-info fa-check-circle')
-    $('#toggle_sidebar').addClass('text-info')
     if (userVideoTracking) {
         if (audioVideoAllowedByUser && audioVideoAllowedByUser) { proctorVideo() }
         else { if (!audioVideoSupportedByUser) { return endExam('cameraNotFound') } else { return endExam('cameraNotAllowed') } }
@@ -265,22 +411,27 @@ async function startExam() {
         if (audioVideoAllowedByUser && audioVideoAllowedByUser) { proctorAudio() }
         else { if (!audioVideoSupportedByUser) { return endExam('microphoneNotFound') } else { return endExam('microphoneNotAllowed') } }
     }
-    if (keepFullScreen) { gotoFullScreen() }
+    if (keepFullScreen) { gotoFullScreen(); monitorFullScreen(); }
     if (blockMultitasking) { trackSwitchTabApplication() }
     if (blockKeyboard) { trackKeyboard() }
     if (blockRightClick) (trackRightClick())
 
-    // Load questions
+    // Load questions and previous responses
     questions.forEach(displayQuestion)
-    $('#submitButton').css('visibility', 'visible')
+    userPreviousResponse.forEach(displayUserResponse)
+    $('#submitButton').show()
 
     // Start timer
     examPaused = false
     if (timeBound) { startTimer() }
-    Toast.fire({ icon: 'success', title: 'Proctor joined.' })
 
     //Auto-save user response
     saveResponse()
+
+    // UI feedback
+    Toast.fire({ icon: 'success', title: 'Proctor joined' })
+    $('#toggle_sidebar').addClass('text-info')
+    $('#guidelines_button').removeClass('fa-circle').addClass('text-info fa-check-circle')
 }
 
 // End the exam upon encountering system issues
@@ -324,7 +475,6 @@ function pauseExam(bodyMessage) {
 
 // Resume the exam upon user confirmation
 function resumeExam() {
-    // Prepare environment
     gotoFullScreen()
     $('#toggle_sidebar').trigger('click')
     $('#pauseExam').modal('hide')
@@ -333,14 +483,41 @@ function resumeExam() {
 
 // Terminate the exam due to repeated user actions
 function terminateExam(examTerminationReason) {
-    // Submit the current state
-    $('#finishExamTitle').text('Examination Terminated!')
-    $('#finishExamBodyText').html('You examination was terminated by the proctor.Reason: <b>' + examTerminationReason + '</b>')
-    finishExamConfirmation()
-    finishExam()
-    // Set exam as terminated
     examPaused = true
     examTerminated = true
+    finishExamConfirmation()
+    finishExam()
+}
+
+// Finish exam with exponential back-off communication
+function finishExam(max = 10, delay = 1000) {
+    examPaused = true
+    examFinished = true
+    $('#questions').hide()
+    $('#finishExamBodyFooter').html('<marquee>SAVING YOUR RESPONSE ON THE SERVER . . .</marquee>')
+    var result = pushResponseToServer(updateResponseSummary(prepareResponse()))
+    if (result) {
+        if (examTerminated) {
+            Toast.fire({
+                timer: 10000, allowEscapeKey: false, showConfirmButton: false, timerProgressBar: true,
+                icon: 'error', title: 'Examination Terminated!', html: '<b>' + examTerminationReason + '</b>'
+            }).then((result) => { if (result.dismiss === Swal.DismissReason.timer) { window.location.replace(displayResultURL) } })
+        }
+        else {
+            Toast.fire({
+                timer: 10000, allowEscapeKey: false, showConfirmButton: false, timerProgressBar: true,
+                icon: 'success', title: 'Saved & submitted!'
+            }).then((result) => { if (result.dismiss === Swal.DismissReason.timer) { window.location.replace(displayResultURL) } })
+        }
+    }
+    else {
+        Toast.fire({ icon: 'error', title: 'Internet Unavailable! Retrying...', timer: delay })
+        if (max > 0) { setTimeout(function () { finishExam(--max, delay * 2); }, delay + Math.random() * 100); }
+        else {
+            Toast.fire({ icon: 'error', title: 'Retrying Submission...', timer: delay })
+            finishExam(max * 10, delay = 1000)
+        }
+    }
 }
 
 // Finish exam confirmation
@@ -350,47 +527,36 @@ function finishExamConfirmation() {
     $('#finishExam').modal('show')
 }
 
-// Finish the exam successfully with exponential back-off
-function finishExam(max = 10, delay = 1000) {
-    examPaused = true
-    examFinished = true
-    $('#questions').hide()
-    $('#finishExamBodyFooter').empty().html('<marquee>Saving your answers...</marquee>')
-    console.log('max', max, 'next delay', delay);
-    var result = pushResponseToServer(prepareResponse())
-    if (result) {
-        Swal.fire({
-            timer: 3000, allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, timerProgressBar: true,
-            icon: 'success', title: 'Saved & submitted!', html: '<br/>Your submission for this examination is recorded on the server.'
-        }).then((result) => { if (result.dismiss === Swal.DismissReason.timer) { window.location.replace(displayResultURL) } })
-    }
-    else {
-        Toast.fire({ icon: 'error', title: 'Internet Unavailable! Retrying...', timer: delay })
-        if (max > 0) { setTimeout(function () { finishExam(--max, delay * 2); }, delay + Math.random() * 100); }
-        else {
-            Toast.fire({ icon: 'error', title: 'Retrying Submission...', timer: delay })
-            finishExam(message, max * 10, delay = 1000)
-        }
-    }
-}
 
-// Form response JSON
+// SAVE USER RESPONSE
+
+// Form response JSON for saving
 function prepareResponse() {
     finalResponse = []
     userResponse = $('input[type=checkbox]:checked')
     for (i = 0; i < userResponse.length; i++) {
         res = userResponse[i]['id']
-        res = res.split(':')
-        if (res[0] in finalResponse) { finalResponse[res[0]] += res[1] }
-        else { finalResponse[res[0]] = res[1] }
+        res = res.split('_')
+        if (res[1] in finalResponse) { finalResponse[res[1]] += res[2] }
+        else { finalResponse[res[1]] = res[2] }
     }
     return finalResponse
 }
 
 // Update user response summary
 function updateResponseSummary(finalResponse) {
-    $('#finishExamBody').empty()
-    $('#finishExamBody').append('<p>You are trying to finish the examination before the permitted time. Are you sure you want to finish this examination?</p>')
+    if (examTerminated) {
+        $('#finishExamTitle').text('Examination Terminated!')
+        $('#finishExamBodyText').html('You examination was terminated by the proctor.Reason: <b>' + examTerminationReason + '</b>')
+    }
+    else if (timeOver) {
+        $('#finishExamTitle').text('Time Over!')
+        $('#finishExamBodyText').text('Time is over for the current examination. We are currently saving your response on the server. Kindly do not close the tab/browser until this is done.')
+    }
+    else {
+        $('#finishExamTitle').text('Finish Early?')
+        $('#finishExamBody').html('<p>You are trying to finish the examination before the permitted time. Are you sure you want to finish this examination?</p>')
+    }
     $('#totalQuestionCount').text(qc)
     $('#attemptedQuestionCount').text(finalResponse.filter(Boolean).length)
     $('#remainingQuestionCount').text(qc - finalResponse.filter(Boolean).length)
@@ -400,22 +566,51 @@ function updateResponseSummary(finalResponse) {
 //Push user response to server
 function pushResponseToServer(finalResponse) {
     if (finalResponse) {
-        return Math.random() >= 0.9
+        return Math.random() >= 0.5
     }
 }
 
 // Save user response every few seconds 
 function saveResponse() {
     var autoSaveInterval = setInterval(function () {
-        if (!(examPaused)) {
-            if (examFinished) { clearInterval(autoSaveInterval); return }
-            online = pushResponseToServer(updateResponseSummary(prepareResponse()))
-            if (!online) { Toast.fire({ icon: 'error', title: 'Internet Unavailable! Retrying...', timer: 5000 }) }
+        if (examFinished) { clearInterval(autoSaveInterval); return }
+        online = pushResponseToServer(updateResponseSummary(prepareResponse()))
+        if (!online) {
+            Toast.fire({ icon: 'error', title: 'Internet Unavailable! Retrying...', timer: 15000 })
         }
     }, 30000);
 }
 
-// Miscellaneous UI/UX + Code Clean
+// ADDITIONAL FUNCTIONALITIES
+
+// Toggle flag for questions
+function toggleFlag(qn) {
+    if ($('#q' + qn + '_checked').children('.fa-check-double').hasClass('text-success')) { toggleChecked(qn) }
+    if ($('#q' + qn + '_flag').children('.fa-flag').hasClass('text-danger')) {
+        $('#q' + qn + '_flag').children('.fa-flag').removeClass('text-danger')
+        $('#question' + qn + '_button').removeClass('text-danger fa-flag').addClass('text-warning fa-circle')
+    }
+    else {
+        $('#q' + qn + '_flag').children('.fa-flag').addClass('text-danger')
+        $('#question' + qn + '_button').removeClass('text-warning fa-circle').addClass('text-danger fa-flag')
+    }
+}
+
+// Toggle checked for questions
+function toggleChecked(qn) {
+    if ($('#q' + qn + '_flag').children('.fa-flag').hasClass('text-danger')) { toggleFlag(qn) }
+    if ($('#q' + qn + '_checked').children('.fa-check-double').hasClass('text-success')) {
+        $('#q' + qn + '_checked').children('.fa-check-double').removeClass('text-success')
+        $('#question' + qn + '_button').removeClass('text-danger fa-check-circle').addClass('text-warning fa-circle')
+    }
+    else {
+        $('#q' + qn + '_checked').children('.fa-check-double').addClass('text-success')
+        $('#question' + qn + '_button').removeClass('text-warning fa-circle').addClass('text-success fa-check-circle')
+    }
+}
+
+// MISCELLANEOUS UI/UX + CLEAN CODE
+
 const ErrorBox = Swal.mixin({
     icon: 'error',
     timerProgressBar: true,
