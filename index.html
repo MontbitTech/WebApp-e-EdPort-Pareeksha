@@ -153,17 +153,42 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
                 </div>
                 <div class="card-body">
                   <h3 class="card-title">In case you fail to adhere to the following guidelines, your attempt for this
-                    examination would be discarded. Kindly read and follow the points sincerely.</h3><br /><br />
-                  <h3 class="card-title">Proctored Examination Guideline:</h3>
-                  <p class="card-text">
-                    1. You will be responsible for ensuring proper lighting so that your face is visible in the
-                    webcam.<br />
-                    2. You will be responsible for ensuring that you remain alone while giving the exam.
-                  </p>
+                    examination would be discarded. Kindly read and follow the points sincerely:</h3><br /><br />
+
                   <h3 class="card-title">Device Usage Guideline:</h3>
                   <p class="card-text">
-                    1. You will not be allowed to switch applications once the exam begins.<br />
-                    2. You will not be allowed to exit the full screen once the exam begins.
+                    1. You will not be allowed to exit the full screen once the exam begins.<br />
+                    2.You will not be allowed to switch applications once the exam begins.
+                  </p>
+                  <h3 class="card-title">Proctored Video Guideline:</h3>
+                  <p class="card-text">
+                    1. You will be responsible for ensuring proper lighting so that your face is visible.<br />
+                    2. You will be responsible for ensuring that you remain alone while giving the exam.
+                  </p>
+                  <h3 class="card-title">Proctored Audio Guideline:</h3>
+                  <p class="card-text">
+                    1. You will be responsible for ensuring complete silence while giving exam.<br />
+                  </p>
+                  <h3 class="card-title">Keyboard/Mouse Guideline:</h3>
+                  <p class="card-text">
+                    1. You will not be allowed to use keyboard once the exam begins.<br />
+                    2. You will not be allowed to use right-click once the exam begins.
+                  </p>
+                  <h3 class="card-title">Timer Guideline:</h3>
+                  <p class="card-text">
+                    1. You will not be allowed to extend the examination timing.<br />
+                  </p>
+                  <h3 class="card-title">Warning Guideline:</h3>
+                  <p class="card-text">
+                    1. You may receive warning for closing full screen; doing so may terminate your examination.<br />
+                    2. You may receive warning for closing switching tab/application; doing so may terminate your
+                    examination.<br />
+                    3. You may receive warning for not being visible; doing so may terminate your examination.<br />
+                    4. You may receive warning for not being alone; doing so may terminate your examination.<br />
+                    5. You may receive warning for not maintaining silence; doing so may terminate your
+                    examination.<br />
+                    6. You may receive warning for using keyboard; doing so may terminate your examination.<br />
+                    7. You may receive warning for using right-click; doing so may terminate your examination.<br />
                   </p>
                   <p id="start_exam_button" style="min-width:100%;text-align:center;display:none;"><a href="#"
                       onclick="startExam()" class="btn btn-danger"><b>Start Examination</b></a>
@@ -278,21 +303,19 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
   <!-- REQUIRED SCRIPTS -->
 
   <!-- jQuery -->
-  <script src="plugins/jquery/jquery.min.js"></script>
+  <script defer src="plugins/jquery/jquery.min.js"></script>
   <!-- Bootstrap 4 -->
-  <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script defer src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
   <!-- SweetAlert 2 -->
-  <script src="plugins/sweetalert2/sweetalert2.all.min.js"></script>
+  <script defer src="plugins/sweetalert2/sweetalert2.all.min.js"></script>
   <!-- AdminLTE App -->
-  <script src="dist/js/adminlte.min.js"></script>
+  <script defer src="dist/js/adminlte.min.js"></script>
   <!-- Face API -->
   <script defer src="plugins/face-api/face-api.min.js"></script>
   <!-- Proctor Integration -->
   <script defer src="dist/js/proctor.js"></script>
   <!-- Exam Lock Integration -->
   <script defer src="dist/js/exam-lock.js"></script>
-  <!-- Timer Integration -->
-  <script defer src="dist/js/timer.js"></script>
   <!-- Lazy Image Load -->
   <script defer src="plugins/lazysizes/lazysizes.min.js"></script>
 
