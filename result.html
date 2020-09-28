@@ -166,8 +166,33 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
                                 <div class="card-header">
                                     <h5 class="m-0">Examination Summary</h5>
                                 </div>
-                                <div class="card-body">
-
+                                <div class="card-body p-0">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Topic</th>
+                                                <th style="width: 40px">Score</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Update software</td>
+                                                <td><span class="badge bg-danger">55%</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Clean database</td>
+                                                <td><span class="badge bg-warning">70%</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Cron job running</td>
+                                                <td><span class="badge bg-primary">30%</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Fix and squish bugs</td>
+                                                <td><span class="badge bg-success">90%</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                                 <div class="card-footer text-center">
                                     <div class="fb-share-button"
@@ -239,6 +264,8 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
     <script defer src="plugins/sweetalert2/sweetalert2.all.min.js"></script>
     <!-- AdminLTE App -->
     <script defer src="dist/js/adminlte.min.js"></script>
+    <!-- Result Integration -->
+    <script defer src="dist/js/result.js"></script>
     <!-- Lazy Image Load -->
     <script defer src="plugins/lazysizes/lazysizes.min.js"></script>
     <!-- Getting Question Paper JSON -->

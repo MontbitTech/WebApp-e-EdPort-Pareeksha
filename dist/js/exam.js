@@ -1,19 +1,19 @@
 // Dummy Data (Replace by API)
-var examProperties = [
-    { keepFullScreen: true },
-    { fullScreenExitAttempts: 3 },
-    { blockMultitasking: true },
-    { multitaskingAttempts: 3 },
-    { userImageCapture: true },
-    { userVideoTracking: true },
-    { userNotAloneWarningCount: 3 },
-    { userNotVisibleWarningCount: 3 },
-    { userAudioTracking: true },
-    { userAudioWarningCount: 3 },
-    { blockKeyboard: true },
-    { blockRightClick: true },
-    { timeBound: true },
-]
+var examProperties = {
+    keepFullScreen: true,
+    fullScreenExitAttempts: 3,
+    blockMultitasking: true,
+    multitaskingAttempts: 3,
+    userImageCapture: true,
+    userVideoTracking: true,
+    userNotAloneWarningCount: 3,
+    userNotVisibleWarningCount: 3,
+    userAudioTracking: true,
+    userAudioWarningCount: 3,
+    blockKeyboard: true,
+    blockRightClick: true,
+    timeBound: true,
+}
 
 var questions = [
     {
@@ -356,11 +356,13 @@ function checkValidUser(email) {
     // TODO: server side check user
     if (email === 'correct@user.com') {
         // TODO: Update username and examination code
-        return acquireUserPermissionHelper()
         // TODO: Pull exam properties
+        setEnvironment()
         // TODO: Pull questions
         // TODO: Pull userPreviousResponse
         // TODO: Pull userPreviousLog
+        // Take User Permissions
+        return acquireUserPermissionHelper()
     }
     else {
         endExam('userDetailsIncorrect')
