@@ -50,18 +50,6 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
                     <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
                 </li>
             </ul>
-            <!-- Right navbar links -->
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <div style="font-size: 1.5rem;" id="timer"></div>
-                </li>
-                <li class="nav-item">
-                    <a id="toggle_sidebar" class="nav-link" data-widget="control-sidebar" data-slide="true" href="#"
-                        role="button" title="View Proctor Logs">
-                        <i class="fas fa-user-shield fa-lg"></i>
-                    </a>
-                </li>
-            </ul>
         </nav>
         <!-- /.navbar -->
 
@@ -87,7 +75,7 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-puzzle-piece"></i>
                                 <p>
-                                    Result: {Exam Code}
+                                    Result: <span class='examID'>{Exam Code}</span>
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
@@ -95,25 +83,25 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
                                 <li class="nav-item">
                                     <a href="#summary" class="nav-link">
                                         <i id="guidelines_button" class="far fa-circle fa-sm nav-icon"></i>
-                                        <p> Summary</p>
+                                        <p> Performance Summary</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="#comparison" class="nav-link">
                                         <i id="guidelines_button" class="far fa-circle fa-sm nav-icon"></i>
-                                        <p> Comparison</p>
+                                        <p> Classmate Comparison</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#myStrength" class="nav-link">
+                                    <a href="#myStrengthWeakness" class="nav-link">
                                         <i id="guidelines_button" class="far fa-circle fa-sm nav-icon"></i>
-                                        <p> My Strength</p>
+                                        <p> Strength & Weakness</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#myWeakness" class="nav-link">
+                                    <a href="advancedAnalytics" class="nav-link">
                                         <i id="guidelines_button" class="far fa-circle fa-sm nav-icon"></i>
-                                        <p> My Weakness</p>
+                                        <p> Strength & Weakness</p>
                                     </a>
                                 </li>
                             </ul>
@@ -149,7 +137,7 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right text-dark">
                                 <li class="m-0 breadcrumb-item">Pareeksha</li>
-                                <li class="m-0 breadcrumb-item">{Examination Code}</li>
+                                <li class="m-0 breadcrumb-item"><span class='examID'>{Exam Code}</span></li>
                             </ol>
                         </div><!-- /.col -->
                     </div><!-- /.row -->
@@ -164,7 +152,7 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
                         <div class="col-lg-12">
                             <div id="summary" class="card">
                                 <div class="card-header">
-                                    <h5 class="m-0">Examination Summary</h5>
+                                    <h5 class="m-0 text-center">Performance Summary</h5>
                                 </div>
                                 <div class="card-body p-0">
                                     <table class="table table-sm">
@@ -207,23 +195,28 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
                     </div>
                     <div id="comparison" class="card">
                         <div class="card-header">
-                            <h5 class="m-0">Classmate Comparison</h5>
+                            <h5 class="m-0 text-center">Classmate Comparison</h5>
                         </div>
                         <div class="card-body">
-
+                            <div class="chart">
+                                <div class="chartjs-size-monitor">
+                                    <div class="chartjs-size-monitor-expand">
+                                        <div class=""></div>
+                                    </div>
+                                    <div class="chartjs-size-monitor-shrink">
+                                        <div class=""></div>
+                                    </div>
+                                </div>
+                                <canvas id="lineChart"
+                                    style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 569px;"
+                                    width="1138" height="500" class="chartjs-render-monitor">
+                                </canvas>
+                            </div>
                         </div>
                     </div>
                     <div id="strength" class="card">
                         <div class="card-header">
-                            <h5 class="m-0">My Strength</h5>
-                        </div>
-                        <div class="card-body">
-
-                        </div>
-                    </div>
-                    <div id="weakness" class="card">
-                        <div class="card-header">
-                            <h5 class="m-0">My Weakness</h5>
+                            <h5 class="m-0 text-center">My Strength & Weakness</h5>
                         </div>
                         <div class="card-body">
 
@@ -241,17 +234,6 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
     </div>
     <!-- /.content-wrapper -->
 
-    <!-- Control Sidebar -->
-    <aside class="control-sidebar control-sidebar-light text-dark">
-        <!-- Control sidebar content goes here -->
-        <div id="proctor" class="p-3">
-            <h5 style="text-align:center;"><small><b><u>PROCTOR FEEDBACK</u></b></small></h5>
-            <div id="warning" style="min-height:40vh;max-height:40vh;font-size:small;overflow:scroll;"></div>
-        </div>
-    </aside>
-    <!-- /.control-sidebar -->
-    </div>
-
     <!-- ./wrapper -->
 
     <!-- REQUIRED SCRIPTS -->
@@ -262,6 +244,8 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
     <script defer src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- SweetAlert 2 -->
     <script defer src="plugins/sweetalert2/sweetalert2.all.min.js"></script>
+    <!-- Chart JS -->
+    <script src="plugins/chart.js/Chart.min.js"></script>
     <!-- AdminLTE App -->
     <script defer src="dist/js/adminlte.min.js"></script>
     <!-- Result Integration -->
@@ -270,91 +254,6 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
     <script defer src="plugins/lazysizes/lazysizes.min.js"></script>
     <!-- Getting Question Paper JSON -->
     <script>
-
-        var questions = [
-            {
-                question: "_______ is the practice and precautions taken to protect valuable information from unauthorized access, recording, disclosure or destruction.",
-                options: ["Network Security", "Database Security", "Information Security", "Physical Security"]
-            },
-            {
-                question: "From the options below, which of them is not a threat to information security?",
-                options: ["Disaster", "Eavesdropping", "Information leakage", "Unchanged default password"]
-            },
-            {
-                question: "From the options below, which of them is not a vulnerability to information security?",
-                options: ["flood", "without deleting data, disposal of storage media", "unchanged default password", "latest patches and updates not done"]
-            },
-            {
-                question: "_______ platforms are used for safety and protection of information in the cloud.",
-                options: ["Cloud workload protection platforms", "Cloud security protocols", "AWS", "One Drive"]
-            },
-            {
-                question: "Which of the following information security technology is used for avoiding browser-based hacking?",
-                options: ["Anti-malware in browsers", "Remote browser access", "Adware remover in browsers", "Incognito mode in a browser"]
-            },
-            {
-                question: "The full form of EDR is _______",
-                options: ["Endpoint Detection and recovery", "Early detection and response", "Endpoint Detection and response", "Endless Detection and Recovery"]
-            },
-            {
-                question: "_______ technology is used for analyzing and monitoring traffic in network and information flow.",
-                options: ["Cloud access security brokers (CASBs)", "Managed detection and response (MDR)", "Network Security Firewall", "Network traffic analysis (NTA)"]
-            },
-            {
-                question: "Compromising confidential information comes under _______",
-                options: ["Bug", "Threat", "Vulnerability", "Attack"]
-            },
-            {
-                question: "Lack of access control policy is a _______",
-                options: ["Bug", "Threat", "Vulnerability", "Attack"]
-            },
-            {
-                question: "Possible threat to any information cannot be _______",
-                options: ["reduced", "transferred", "protected", "ignored"]
-            },
-        ]
-
-        var examProperties = [
-            { keepFullScreen: true },
-            { fullScreenExitAttempts: 3 },
-            { blockMultitasking: true },
-            { multitaskingAttempts: 3 },
-            { userImageCapture: true },
-            { userVideoTracking: true },
-            { userNotAloneWarningCount: 3 },
-            { userNotVisibleWarningCount: 3 },
-            { userAudioTracking: true },
-            { userAudioWarningCount: 3 },
-            { blockKeyboard: true },
-            { blockRightClick: true },
-            { timeBound: true },
-        ]
-
-        var correctResponse = [
-            { 1: [1, 3] },
-            { 2: [4] },
-            { 3: [1] },
-            { 4: [1] },
-            { 5: [2] },
-            { 6: [3] },
-            { 7: [4] },
-            { 8: [2] },
-            { 9: [3] },
-            { 10: [4] },
-        ]
-
-        var userResponse = [
-            { 1: [1, 3] },
-            { 2: [4] },
-            { 3: [1] },
-            { 4: [1] },
-            { 5: [2] },
-            { 6: [3] },
-            { 7: [4] },
-            { 8: [2] },
-            { 9: [3] },
-            { 10: [4] },
-        ]
 
     </script>
 </body>

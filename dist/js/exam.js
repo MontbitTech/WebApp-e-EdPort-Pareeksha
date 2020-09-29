@@ -101,7 +101,9 @@ var userPreviousResponse = [
     },
 ]
 
-var userPreviousLog = []
+var userPreviousLog = [
+
+]
 
 
 // Defining default exam parameters, irrespective of properties
