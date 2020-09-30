@@ -570,7 +570,7 @@ function updateResponseSummary(finalResponse) {
 //Push user response to server
 function pushResponseToServer(finalResponse) {
     if (finalResponse) {
-        return Math.random() >= 0.5
+        return Math.random() >= 0.01
     }
 }
 
