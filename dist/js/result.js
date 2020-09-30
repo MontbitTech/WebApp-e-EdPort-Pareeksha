@@ -1,8 +1,115 @@
 const urlParams = new URLSearchParams(window.location.search);
 const entries = urlParams.entries()
-var dataset = []
+var datasets = []
 var student = ''
 var examID = ''
+
+// Dummy Data (Replace by API)
+var examProperties = {
+    keepFullScreen: true,
+    fullScreenExitAttempts: 3,
+    blockMultitasking: true,
+    multitaskingAttempts: 3,
+    userImageCapture: true,
+    userVideoTracking: true,
+    userNotAloneWarningCount: 3,
+    userNotVisibleWarningCount: 3,
+    userAudioTracking: true,
+    userAudioWarningCount: 3,
+    blockKeyboard: true,
+    blockRightClick: true,
+    timeBound: true,
+}
+
+var questions = [
+    {
+        question: "_______ is the practice and precautions taken to protect valuable information from unauthorized access, recording, disclosure or destruction.",
+        options: ["Network Security", "Database Security", "Information Security", "Physical Security"]
+    },
+    {
+        question: "From the options below, which of them is not a threat to information security?",
+        options: ["Disaster", "Eavesdropping", "Information leakage", "Unchanged default password"]
+    },
+    {
+        question: "From the options below, which of them is not a vulnerability to information security?",
+        options: ["flood", "without deleting data, disposal of storage media", "unchanged default password", "latest patches and updates not done"]
+    },
+    {
+        question: "_______ platforms are used for safety and protection of information in the cloud.",
+        options: ["Cloud workload protection platforms", "Cloud security protocols", "AWS", "One Drive"]
+    },
+    {
+        question: "Which of the following information security technology is used for avoiding browser-based hacking?",
+        options: ["Anti-malware in browsers", "Remote browser access", "Adware remover in browsers", "Incognito mode in a browser"]
+    },
+    {
+        question: "The full form of EDR is _______",
+        options: ["Endpoint Detection and recovery", "Early detection and response", "Endpoint Detection and response", "Endless Detection and Recovery"]
+    },
+    {
+        question: "_______ technology is used for analyzing and monitoring traffic in network and information flow.",
+        options: ["Cloud access security brokers (CASBs)", "Managed detection and response (MDR)", "Network Security Firewall", "Network traffic analysis (NTA)"]
+    },
+    {
+        question: "Compromising confidential information comes under _______",
+        options: ["Bug", "Threat", "Vulnerability", "Attack"]
+    },
+    {
+        question: "Lack of access control policy is a _______",
+        options: ["Bug", "Threat", "Vulnerability", "Attack"]
+    },
+    {
+        question: "Possible threat to any information cannot be _______",
+        options: ["reduced", "transferred", "protected", "ignored"]
+    },
+]
+
+var userPreviousResponse = [
+    {
+        question: 1,
+        response: [1, 3]
+    },
+    {
+        question: 2,
+        response: [4]
+    },
+    {
+        question: 3,
+        response: [1]
+    },
+    {
+        question: 4,
+        response: [1]
+    },
+    {
+        question: 5,
+        response: [2]
+    },
+    {
+        question: 6,
+        response: [3]
+    },
+    {
+        question: 7,
+        response: [4]
+    },
+    {
+        question: 8,
+        response: [2]
+    },
+    {
+        question: 9,
+        response: [3]
+    },
+    {
+        question: 10,
+        response: [4]
+    },
+]
+
+var userPreviousLog = [
+
+]
 
 var myResponse = {
     response: [0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4]
@@ -34,7 +141,7 @@ var otherResponse = [
 var correctResponse = {
     topic: ['t1', 't2', 't3', 't4', 't5', 't6', 't7', 't8', 't9', 't10', 't1', 't2', 't3', 't4', 't5', 't6', 't7', 't8', 't9', 't10', 't1', 't2', 't3', 't4', 't5'],
     marks: [2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2],
-    response: [0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4]
+    response: [0, 1, 2, 2, 3, 4, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4]
 }
 
 function createDataset() {
@@ -49,7 +156,7 @@ function initChart() {
             {
                 label: 'My Response',
                 backgroundColor: 'white',
-                borderColor: 'teal',
+                borderColor: 'grey',
                 data: [0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4],
                 lineTension: 0
             },
@@ -85,7 +192,7 @@ function initChart() {
                 label: 'Correct Response',
                 backgroundColor: 'white',
                 borderColor: 'green',
-                data: [1, 1, 2, 2, 3, 3, 4, 4, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 1, 1, 2, 2, 3, 3, 4],
+                data: [1, 12, 2, 2, 3, 3, 4, 4, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 1, 1, 2, 2, 3, 3, 4],
                 lineTension: 0
             },
         ]
@@ -115,86 +222,19 @@ function initChart() {
         options: lineChartOptions
     })
 }
-function setValuesFromURL() {
-    for (const entry of entries) {
-        if (entry[0] == 'student') {
-            student = entry[1]
-        }
-        if (entry[0] == 'examID') {
-            examID = entry[1]
-        }
-    }
-}
 
+//
 function fillData() {
-    setValuesFromURL()
+    for (const entry of entries) {
+        if (entry[0] == 'student') { student = entry[1] }
+        if (entry[0] == 'examID') { examID = entry[1] }
+    }
     document.title = `परीक्षा | ${examID} | Result`
     $('.examID').html(examID)
 }
 
 // Document on Ready
 $(document).ready(function () {
-    // Check if the values are correct
-
-    // Start displaying result
     initChart()
     fillData()
 })
-
-
-
-
-
-
-    < script src = "https://code.jquery.com/jquery-3.5.1.min.js" integrity = "sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin = "anonymous" ></script >
-<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@2.5.207/build/pdf.min.js" integrity="sha256-NMk29+Q3bvHtq0hPDEcnEvBTed8DhkQRdiUMw7xG2fE=" crossorigin="anonymous"></script>
-
-<h1>PDF.js 'Hello, world!' example</h1>
-
-<canvas id="the-canvas"></canvas>
-
-<script>
-            // If absolute URL from the remote server is provided, configure the CORS
-            // header on that server.
-            var url = 'https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/examples/learning/helloworld.pdf';
-
-// Loaded via <script> tag, create shortcut to access PDF.js exports.
-            var pdfjsLib = window['pdfjs-dist/build/pdf'];
-
-            // The workerSrc property shall be specified.
-            pdfjsLib.GlobalWorkerOptions.workerSrc = '//mozilla.github.io/pdf.js/build/pdf.worker.js';
-
-            // Asynchronous download of PDF
-            var loadingTask = pdfjsLib.getDocument(url);
-loadingTask.promise.then(function(pdf) {
-  console.log('PDF loaded');
-  
-  // Fetch the first page
-  var pageNumber = 1;
-  pdf.getPage(pageNumber).then(function(page) {
-    console.log('Page loaded');
-    
-    var scale = 1.5;
-    var viewport = page.getViewport({scale: scale});
-
-    // Prepare canvas using PDF page dimensions
-    var canvas = document.getElementById('the-canvas');
-    var context = canvas.getContext('2d');
-    canvas.height = viewport.height;
-    canvas.width = viewport.width;
-
-    // Render PDF page into canvas context
-    var renderContext = {
-      canvasContext: context,
-      viewport: viewport
-    };
-    var renderTask = page.render(renderContext);
-    renderTask.promise.then(function () {
-      console.log('Page rendered');
-    });
-  });
-}, function (reason) {
-  // PDF loading error
-  console.error(reason);
-});
-</script>

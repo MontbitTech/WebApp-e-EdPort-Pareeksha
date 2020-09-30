@@ -106,6 +106,11 @@ var userPreviousLog = [
 ]
 
 
+const urlParams = new URLSearchParams(window.location.search);
+const entries = urlParams.entries()
+var student = ''
+var examID = ''
+
 // Defining default exam parameters, irrespective of properties
 
 // Full Screen while giving exam
@@ -343,7 +348,7 @@ async function gatherUserDetail() {
         title: 'Registered Email ID',
         input: 'email',
         inputPlaceholder: 'Enter your registered email ID',
-        inputValue: 'correct@user.com',
+        inputValue: student,
         inputAttributes: {
             'aria-label': 'Registered email ID'
         },
@@ -675,3 +680,17 @@ function acquireUserPermissionResult() {
     }
 }
 
+function fillData() {
+    for (const entry of entries) {
+        if (entry[0] == 'student') { student = entry[1] }
+        if (entry[0] == 'examID') { examID = entry[1] }
+    }
+    document.title = `परीक्षा | ${examID}`
+    $('.examID').html(examID)
+}
+
+// Document on Ready
+$(document).ready(function () {
+    fillData()
+    gatherUserDetail()
+})

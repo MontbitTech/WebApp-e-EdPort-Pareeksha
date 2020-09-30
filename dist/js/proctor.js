@@ -1,6 +1,6 @@
 // Global variables
 var peopleCounts = new Array(10).fill(1)
-var audioLevels = new Array(200).fill(0)
+var audioLevels = new Array(150).fill(0)
 var examLog = []
 var elapsedTime = 0
 const videoFeed = document.getElementById('video')
