@@ -17,93 +17,71 @@ var examProperties = {
 
 var questions = [
     {
-        question: "_______ is the practice and precautions taken to protect valuable information from unauthorized access, recording, disclosure or destruction.",
-        options: ["Network Security", "Database Security", "Information Security", "Physical Security"]
+        question: '_______ is the practice and precautions taken to protect valuable information from unauthorized access, recording, disclosure or destruction.',
+        options: ['Network Security', 'Database Security', 'Information Security', 'Physical Security'],
+        topic: 'Introduction to Cyber Security',
+        marks: 2
     },
     {
-        question: "From the options below, which of them is not a threat to information security?",
-        options: ["Disaster", "Eavesdropping", "Information leakage", "Unchanged default password"]
+        question: 'From the options below, which of them is not a threat to information security?',
+        options: ['Disaster', 'Eavesdropping', 'Information leakage', 'Unchanged default password'],
+        topic: 'Introduction to Cyber Security',
+        marks: 2
     },
     {
-        question: "From the options below, which of them is not a vulnerability to information security?",
-        options: ["flood", "without deleting data, disposal of storage media", "unchanged default password", "latest patches and updates not done"]
+        question: 'From the options below, which of them is not a vulnerability to information security?',
+        options: ['flood', 'without deleting data, disposal of storage media', 'unchanged default password', 'latest patches and updates not done'],
+        topic: 'Introduction to Cyber Security',
+        marks: 2
     },
     {
-        question: "_______ platforms are used for safety and protection of information in the cloud.",
-        options: ["Cloud workload protection platforms", "Cloud security protocols", "AWS", "One Drive"]
+        question: '_______ platforms are used for safety and protection of information in the cloud.',
+        options: ['Cloud workload protection platforms', 'Cloud security protocols', 'AWS', 'One Drive'],
+        topic: 'Deep Dive into Cyber Security',
+        marks: 2
     },
     {
-        question: "Which of the following information security technology is used for avoiding browser-based hacking?",
-        options: ["Anti-malware in browsers", "Remote browser access", "Adware remover in browsers", "Incognito mode in a browser"]
+        question: 'Which of the following information security technology is used for avoiding browser-based hacking?',
+        options: ['Anti-malware in browsers', 'Remote browser access', 'Adware remover in browsers', 'Incognito mode in a browser'],
+        topic: 'Deep Dive into Cyber Security',
+        marks: 2
     },
     {
-        question: "The full form of EDR is _______",
-        options: ["Endpoint Detection and recovery", "Early detection and response", "Endpoint Detection and response", "Endless Detection and Recovery"]
+        question: 'The full form of EDR is _______',
+        options: ['Endpoint Detection and recovery', 'Early detection and response', 'Endpoint Detection and response', 'Endless Detection and Recovery'],
+        topic: 'Deep Dive into Cyber Security',
+        marks: 2
     },
     {
-        question: "_______ technology is used for analyzing and monitoring traffic in network and information flow.",
-        options: ["Cloud access security brokers (CASBs)", "Managed detection and response (MDR)", "Network Security Firewall", "Network traffic analysis (NTA)"]
+        question: '_______ technology is used for analyzing and monitoring traffic in network and information flow.',
+        options: ['Cloud access security brokers (CASBs)', 'Managed detection and response (MDR)', 'Network Security Firewall', 'Network traffic analysis (NTA)'],
+        topic: 'Deep Dive into Cyber Security',
+        marks: 2
     },
     {
-        question: "Compromising confidential information comes under _______",
-        options: ["Bug", "Threat", "Vulnerability", "Attack"]
+        question: 'Compromising confidential information comes under _______',
+        options: ['Bug', 'Threat', 'Vulnerability', 'Attack'],
+        topic: 'Threats of Digital World',
+        marks: 2
     },
     {
-        question: "Lack of access control policy is a _______",
-        options: ["Bug", "Threat", "Vulnerability", "Attack"]
+        question: 'Lack of access control policy is a _______',
+        options: ['Bug', 'Threat', 'Vulnerability', 'Attack'],
+        topic: 'Threats of Digital World',
+        marks: 2
     },
     {
-        question: "Possible threat to any information cannot be _______",
-        options: ["reduced", "transferred", "protected", "ignored"]
+        question: 'Possible threat to any information cannot be _______',
+        options: ['reduced', 'transferred', 'protected', 'ignored'],
+        topic: 'Threats of Digital World',
+        marks: 2
     },
 ]
 
-var userPreviousResponse = [
-    {
-        question: 1,
-        response: [1, 3]
-    },
-    {
-        question: 2,
-        response: [4]
-    },
-    {
-        question: 3,
-        response: [1]
-    },
-    {
-        question: 4,
-        response: [1]
-    },
-    {
-        question: 5,
-        response: [2]
-    },
-    {
-        question: 6,
-        response: [3]
-    },
-    {
-        question: 7,
-        response: [4]
-    },
-    {
-        question: 8,
-        response: [2]
-    },
-    {
-        question: 9,
-        response: [3]
-    },
-    {
-        question: 10,
-        response: [4]
-    },
-]
+var myLog = []
 
-var userPreviousLog = [
+var myResponse = [0, 1234, 2, 3, 4, 0, 1, 2, 3, 4]
 
-]
 
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -385,6 +363,7 @@ function displayQuestion(q) {
     $('#q' + qc).append('<div id="q' + qc + '_body" class="card-body"><h6 class= "card-title">' + q.question + '</h6><br/><br/></div>')
     q.options.forEach(populateOptions)
     $('#questionList').append('<li class="nav-item"><a href="#question' + qc + '" class="nav-link"><i id="question' + qc + '_button" class="far fa-circle text-warning fa-sm nav-icon"></i><p>&nbsp;Question ' + qc + '</p></a></li>')
+    $('#q' + qc).append('<div id="q' + qc + '_body" class="card-footer text-secondary"><span class="font-italic font-weight-light">' + q.topic + '</span><span class="float-right font-weight-normal">Marks: ' + q.marks + '</span></div>')
 }
 
 // Add option for each option in question
@@ -395,14 +374,16 @@ function populateOptions(o) {
 
 // Add user response if present
 function displayUserResponse(r) {
-    for (var i = 0; i < r.response.length; i++) {
-        populateUserResponse(r.question, r.response[i]);
+    for (var i = 0; i < r.length; i++) {
+        populateUserResponse(i + 1, r[i].toString());
     }
 }
 
 // Check mark the option if selected previously
 function populateUserResponse(q, c) {
-    document.getElementById('o_' + q + '_' + c).checked = true
+    for (var i = 0; i < c.length; i++) {
+        if (c[i] !== '0') { document.getElementById('o_' + q + '_' + c[i]).checked = true }
+    }
 }
 
 
@@ -427,7 +408,7 @@ async function startExam() {
 
     // Load questions and previous responses
     questions.forEach(displayQuestion)
-    userPreviousResponse.forEach(displayUserResponse)
+    displayUserResponse(myResponse)
     $('#submitButton').show()
 
     // Start timer
@@ -437,7 +418,8 @@ async function startExam() {
     //Auto-save user response
     saveResponse()
 
-    // UI feedback
+    // UI feedback & Enhancement
+    $('html, body').animate({ scrollTop: $("#question1").offset().top }, 1000)
     Toast.fire({ icon: 'success', title: 'Proctor joined' })
     $('#toggle_sidebar').addClass('text-info')
     $('#guidelines_button').removeClass('fa-circle').addClass('text-info fa-check-circle')
