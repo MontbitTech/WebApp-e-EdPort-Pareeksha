@@ -3,6 +3,8 @@ const entries = urlParams.entries()
 var datasets = []
 var student = ''
 var examID = ''
+var strength = []
+var weakness = []
 
 // Dummy Data (Replace by API)
 var examProperties = {
@@ -95,23 +97,23 @@ var otherResponse = [
     },
     {
         user: 'Anshuman',
-        response: [1, 2, 3, 4, 0, 1, 2, 3, 4, 0]
+        response: ['1', '2', '3', '4', '0', '1', '2', '3', '4', '0']
     },
     {
         user: 'Kritarth',
-        response: [2, 3, 4, 0, 1, 2, 3, 4, 0, 1]
+        response: ['2', '3', '4', '0', '1', '2', '3', '4', '0', '1']
     },
     {
         user: 'Vikram',
-        response: [3, 4, 0, 1, 2, 3, 4, 0, 1, 2]
+        response: ['3', '4', '0', '1', '2', '3', '4', '0', '1', '2']
     },
     {
         user: 'Paras',
-        response: [4, 0, 1, 2, 3, 4, 0, 1, 2, 3]
+        response: ['4', '0', '1', '2', '3', '4', '0', '1', '2', '3']
     },
 ]
 
-var correctResponse = [0, 1, 2, 2, 3, 4, 0, 1, 2, 3]
+var correctResponse = ['0', '1234', '2', '2', '3', '4', '0', '1', '2', '3']
 
 // Global Variables
 var qc = 0
@@ -143,7 +145,7 @@ function initChart() {
     datasets.push({
         label: student,
         data: myResponse,
-        borderColor: 'rgba(2, 136, 209,0.8)',
+        borderColor: 'rgba(2, 136, 209,0.5)',
         fill: false,
         lineTension: 0
     })
@@ -222,11 +224,11 @@ function displayQuestion(q) {
     ++qc
     oc = 0
     $('#questions').append('<div id="question' + qc + '" style="padding-top:60px;" class="col-lg-12"><div id="q' + qc + '" class="card"></div></div>')
-    $('#q' + qc).append('<div class="card-header"><h3 class="card-title">Question ' + qc + '</h3><div class="card-tools"><button id="q' + qc + '_flag" type="button" onclick="toggleFlag(' + qc + ')" class="btn btn-tool"><i class="fas fa-flag"> Flag</i></button><button id="q' + qc + '_checked" type="button" onclick="toggleChecked(' + qc + ')" class="btn btn-tool"><i class="fas fa-check-double"> Checked</i></button></div ></div>')
+    $('#q' + qc).append('<div class="card-header"><h3 class="card-title">Question ' + qc + '</h3></div>')
     $('#q' + qc).append('<div id="q' + qc + '_body" class="card-body"><h6 class= "card-title">' + q.question + '</h6><br/><br/></div>')
     q.options.forEach(populateOptions)
     $('#questionList').append('<li class="nav-item"><a href="#question' + qc + '" class="nav-link"><i id="question' + qc + '_button" class="far fa-circle text-warning fa-sm nav-icon"></i><p>&nbsp;Question ' + qc + '</p></a></li>')
-    $('#q' + qc).append('<div id="q' + qc + '_body" class="card-footer text-secondary"><span class="font-italic font-weight-light">' + q.topic + '</span><span class="float-right font-weight-normal">Marks: ' + q.marks + '</span></div>')
+    $('#q' + qc).append('<div class="card-footer text-secondary"><span class="font-italic font-weight-light">' + q.topic + '</span><span class="float-right font-weight-normal">Marks: ' + q.marks + '</span></div>')
 }
 
 // Add option for each option in question
@@ -258,8 +260,17 @@ function displayCorrectResponse(r) {
 
 // Check mark the correct option
 function populateCorrectResponse(q, c) {
+    if (c == myResponse[q - 1]) {
+        $('#q' + q).css({ 'background-color': 'rgba(27, 94, 32,0.1)' })
+    }
+    else {
+        $('#q' + q).css({ 'background-color': 'rgba(229, 57, 53, 0.1)' })
+    }
     for (var i = 0; i < c.length; i++) {
-        if (c[i] !== '0') { $('#o_' + q + '_' + c[i]).siblings().css({ 'background-color': 'rgba(27, 94, 32,0.25)', 'color': 'black', 'font-weight': '900' }) }
+        if (c[i] !== '0') {
+            $('#o_' + q + '_' + c[i]).siblings().css({ 'border-style': 'dashed', 'border-width': '1px', 'border-radius': '5px', 'color': 'rgba(27, 94, 32)', 'font-weight': '900' })
+            $('#o_' + q + '_' + c[i]).css({ 'text-color': 'green' })
+        }
     }
 }
 
