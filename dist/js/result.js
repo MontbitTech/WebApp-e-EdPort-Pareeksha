@@ -4,6 +4,7 @@ var datasets = []
 var student = ''
 var examID = ''
 var strength = []
+var neutral = []
 var weakness = []
 
 // Dummy Data (Replace by API)
@@ -25,70 +26,101 @@ var examProperties = {
 
 var questions = [
     {
+        id: 4,
         question: '_______ is the practice and precautions taken to protect valuable information from unauthorized access, recording, disclosure or destruction.',
         options: ['Network Security', 'Database Security', 'Information Security', 'Physical Security'],
-        topic: 'Topic 1',
+        type_of_question: "single_choice",
+        topic: 'Introduction to Cyber Security',
         marks: 2
     },
     {
+        id: 6,
         question: 'From the options below, which of them is not a threat to information security?',
         options: ['Disaster', 'Eavesdropping', 'Information leakage', 'Unchanged default password'],
-        topic: 'Topic 1',
+        type_of_question: "single_choice",
+        topic: 'Introduction to Cyber Security',
         marks: 2
     },
     {
+        id: 8,
         question: 'From the options below, which of them is not a vulnerability to information security?',
         options: ['flood', 'without deleting data, disposal of storage media', 'unchanged default password', 'latest patches and updates not done'],
-        topic: 'Topic 1',
+        type_of_question: "single_choice",
+        topic: 'Introduction to Cyber Security',
         marks: 2
     },
     {
+        id: 10,
         question: '_______ platforms are used for safety and protection of information in the cloud.',
         options: ['Cloud workload protection platforms', 'Cloud security protocols', 'AWS', 'One Drive'],
-        topic: 'Topic 2',
+        type_of_question: "single_choice",
+        topic: 'Deep Dive into Cyber Security',
         marks: 2
     },
     {
+        id: 12,
         question: 'Which of the following information security technology is used for avoiding browser-based hacking?',
         options: ['Anti-malware in browsers', 'Remote browser access', 'Adware remover in browsers', 'Incognito mode in a browser'],
-        topic: 'Topic 2',
+        type_of_question: "single_choice",
+        topic: 'Deep Dive into Cyber Security',
         marks: 2
     },
     {
+        id: 14,
         question: 'The full form of EDR is _______',
         options: ['Endpoint Detection and recovery', 'Early detection and response', 'Endpoint Detection and response', 'Endless Detection and Recovery'],
-        topic: 'Topic 2',
+        type_of_question: "single_choice",
+        topic: 'Deep Dive into Cyber Security',
         marks: 2
     },
     {
+        id: 16,
         question: '_______ technology is used for analyzing and monitoring traffic in network and information flow.',
         options: ['Cloud access security brokers (CASBs)', 'Managed detection and response (MDR)', 'Network Security Firewall', 'Network traffic analysis (NTA)'],
-        topic: 'Topic 2',
+        type_of_question: "single_choice",
+        topic: 'Deep Dive into Cyber Security',
         marks: 2
     },
     {
+        id: 18,
         question: 'Compromising confidential information comes under _______',
         options: ['Bug', 'Threat', 'Vulnerability', 'Attack'],
-        topic: 'Topic 3',
+        type_of_question: "single_choice",
+        topic: 'Threats of Digital World',
         marks: 2
     },
     {
+        id: 20,
         question: 'Lack of access control policy is a _______',
         options: ['Bug', 'Threat', 'Vulnerability', 'Attack'],
-        topic: 'Topic 3',
+        type_of_question: "single_choice",
+        topic: 'Threats of Digital World',
         marks: 2
     },
     {
+        id: 22,
         question: 'Possible threat to any information cannot be _______',
         options: ['reduced', 'transferred', 'protected', 'ignored'],
-        topic: 'Topic 3',
+        type_of_question: "single_choice",
+        topic: 'Threats of Digital World',
         marks: 2
     },
 ]
 
 var myLog = []
 
-var myResponse = ['0', '1234', '2', '3', '4', '0', '1', '2', '3', '4']
+var myResponse = [
+    { id: 4, response: 0 },
+    { id: 6, response: 1234 },
+    { id: 8, response: 2 },
+    { id: 10, response: 3 },
+    { id: 12, response: 4 },
+    { id: 14, response: 0 },
+    { id: 16, response: 1 },
+    { id: 18, response: 2 },
+    { id: 20, response: 3 },
+    { id: 22, response: 4 }
+]
 
 var otherResponse = [
     {
@@ -141,6 +173,7 @@ function createOthersDataset(d) {
 }
 
 function initChart() {
+    // Classmate Comparison Chart
     otherResponse.forEach(createOthersDataset)
     datasets.push({
         label: student,
@@ -156,11 +189,11 @@ function initChart() {
         fill: false,
         lineTension: 0
     })
-    var ctx = $('#lineChart').get(0).getContext('2d');
+    var ctx = $('#classmateComparisonChart').get(0).getContext('2d');
     var myLine = new Chart(ctx, {
         type: 'line',
         data: {
-            xLabels: ['Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7', 'Q8', 'Q9', 'Q10', 'Q11', 'Q12', 'Q13', 'Q14', 'Q15', 'Q16', 'Q17', 'Q18', 'Q19', 'Q20', 'Q21', 'Q22', 'Q23', 'Q24', 'Q25'],
+            xLabels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25'],
             yLabels: ['0', '1', '2', '3', '4', '12', '13', '14', '23', '24', '34', '123', '124', '134', '234', '1234'],
             datasets: datasets
         },
@@ -172,16 +205,29 @@ function initChart() {
                 xAxes: [{
                     display: true,
                     gridLines: { display: false, },
-                    scaleLabel: { display: true, labelString: 'Month' }
+                    scaleLabel: { display: true, labelString: 'Questions' }
                 }],
                 yAxes: [{
                     type: 'category',
-                    scaleLabel: { display: true, labelString: 'Request State' },
+                    scaleLabel: { display: true, labelString: 'Response' },
                     ticks: { reverse: true },
                 }]
             }
         }
     })
+
+    // Examination Timeline Chart
+    window.onload = function () {
+        var ctx = $('#examinationTimelineChart').get(0).getContext('2d');
+        window.myScatter = Chart.Scatter(ctx, {
+            data: [{ x: 7, y: 2 }, { x: 2, y: 7 }],
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                legend: { display: false },
+            }
+        });
+    };
 }
 
 // CORE EXAMINATION SETUP
@@ -223,8 +269,8 @@ function checkValidUser(email) {
 function displayQuestion(q) {
     ++qc
     oc = 0
-    $('#questions').append('<div id="question' + qc + '" style="padding-top:60px;" class="col-lg-12"><div id="q' + qc + '" class="card"></div></div>')
-    $('#q' + qc).append('<div class="card-header"><h3 class="card-title">Question ' + qc + '</h3></div>')
+    $('#questions').append('<div id="question' + qc + '" class="col-lg-12"><div id="q' + qc + '" class="card collapsed-card"></div></div>')
+    $('#q' + qc).append('<div class="card-header"><h3 class="card-title">Question ' + qc + '</h3><div class="card-tools"><button type="button" class="btn btn-tool" data-card-widget="collapse"><i class= "fas fa-plus" ></i ></button ></div></div>')
     $('#q' + qc).append('<div id="q' + qc + '_body" class="card-body"><h6 class= "card-title">' + q.question + '</h6><br/><br/></div>')
     q.options.forEach(populateOptions)
     $('#questionList').append('<li class="nav-item"><a href="#question' + qc + '" class="nav-link"><i id="question' + qc + '_button" class="far fa-circle text-warning fa-sm nav-icon"></i><p>&nbsp;Question ' + qc + '</p></a></li>')
@@ -262,9 +308,11 @@ function displayCorrectResponse(r) {
 function populateCorrectResponse(q, c) {
     if (c == myResponse[q - 1]) {
         $('#q' + q).css({ 'background-color': 'rgba(27, 94, 32,0.1)' })
+        $('#question' + q + '_button').removeClass('fa-circle').removeClass('text-warning').addClass('fa-check-circle text-success')
     }
     else {
         $('#q' + q).css({ 'background-color': 'rgba(229, 57, 53, 0.1)' })
+        $('#question' + q + '_button').removeClass('fa-circle').removeClass('text-warning').addClass('fa-times-circle text-danger')
     }
     for (var i = 0; i < c.length; i++) {
         if (c[i] !== '0') {

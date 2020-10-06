@@ -37,7 +37,7 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
 
 </head>
 
-<body onselectstart="return false" class="sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+<body onselectstart="return false" class="sidebar-mini layout-fixed layout-footer-fixed">
     <div id="fb-root"></div>
     <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v8.0"
         nonce="zlMIPSAZ"></script>
@@ -87,7 +87,7 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#myStrengthWeakness" class="nav-link">
+                                    <a href="#strengthWeakness" class="nav-link">
                                         <i id="guidelines_button" class="far fa-circle fa-sm nav-icon"></i>
                                         <p> Strength & Weakness</p>
                                     </a>
@@ -99,18 +99,18 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="advancedAnalytics" class="nav-link">
+                                    <a href="#examinationTimeline" class="nav-link">
                                         <i id="guidelines_button" class="far fa-circle fa-sm nav-icon"></i>
-                                        <p> Strength & Weakness</p>
+                                        <p> Examination Timeline</p>
                                     </a>
                                 </li>
                             </ul>
                         </li>
                         <li class="nav-item has-treeview menu-open">
-                            <a href="#" class="nav-link">
+                            <a href="#questions" class="nav-link">
                                 <i class="nav-icon fas fa-puzzle-piece"></i>
                                 <p>
-                                    Answer Key
+                                    Response Evaluation
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
@@ -129,7 +129,7 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
         <div class="content-wrapper">
             <!-- Content Header (Page header) -->
             <div class="content-header">
-                <div id="guidelines" class="container-fluid">
+                <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
                             <h1 class="m-0 text-dark">Welcome, {User}</h1>
@@ -148,9 +148,9 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
             <!-- Main content -->
             <div class="content">
                 <div class="container-fluid">
-                    <div class="row">
+                    <div id="summary" class="row">
                         <div class="col-lg-12">
-                            <div id="summary" class="card">
+                            <div class="card">
                                 <div class="card-header">
                                     <h5 class="m-0 text-center">Performance Summary</h5>
                                 </div>
@@ -164,20 +164,20 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td>Update software</td>
-                                                <td><span class="badge bg-danger">55%</span></td>
+                                                <td>Your Score</td>
+                                                <td><span class="badge bg-success">70%</span></td>
                                             </tr>
                                             <tr>
-                                                <td>Clean database</td>
-                                                <td><span class="badge bg-warning">70%</span></td>
+                                                <td>Batch Average Score</td>
+                                                <td><span class="badge bg-danger">35%</span></td>
                                             </tr>
                                             <tr>
-                                                <td>Cron job running</td>
-                                                <td><span class="badge bg-primary">30%</span></td>
+                                                <td>Class Average Score</td>
+                                                <td><span class="badge bg-warning">60%</span></td>
                                             </tr>
                                             <tr>
-                                                <td>Fix and squish bugs</td>
-                                                <td><span class="badge bg-success">90%</span></td>
+                                                <td>Examination Average Score</td>
+                                                <td><span class="badge bg-primary">55%</span></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -194,48 +194,202 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
                         </div>
                     </div>
 
-                    <div id="strength" class="card">
-                        <div class="card-header">
-                            <h5 class="m-0 text-center">My Strength & Weakness</h5>
-                        </div>
-                        <div class="card-body">
+                    <div id="strengthWeakness" class="row">
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="m-0 text-center">Strength & Weakness</h5>
+                                </div>
+                                <div class="card-body row">
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="info-box bg-success">
+                                            <span class="info-box-icon"><i class="fa fa-balance-scale-left"></i></span>
 
-                        </div>
-                        <div class="card-footer text-center">
-                            <button type="button" class="btn btn-default btn-sm" data-toggle="modal"
-                                data-target="#modal-default">
-                                <small>How is that computed?</small>
-                            </button>
+                                            <div class="info-box-content">
+                                                <span class="info-box-text">Strength</span>
+                                                <span class="info-box-number">80% average score</span>
+
+                                                <div class="progress">
+                                                    <div class="progress-bar" style="width: 80%"></div>
+                                                </div>
+                                                <span class="progress-description">
+                                                    You are good in:<br />
+                                                    Topic Name<br />
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="info-box bg-warning">
+                                            <span class="info-box-icon"><i class="fa fa-balance-scale"></i></span>
+
+                                            <div class="info-box-content">
+                                                <span class="info-box-text">Neutral</span>
+                                                <span class="info-box-number">50% average score</span>
+
+                                                <div class="progress">
+                                                    <div class="progress-bar" style="width: 50%"></div>
+                                                </div>
+                                                <span class="progress-description">
+                                                    You are average in:<br />
+                                                    Topic Name<br />
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="info-box bg-danger">
+                                            <span class="info-box-icon"><i class="fa fa-balance-scale-right"></i></span>
+
+                                            <div class="info-box-content">
+                                                <span class="info-box-text">Weakness</span>
+                                                <span class="info-box-number">20% average score</span>
+
+                                                <div class="progress">
+                                                    <div class="progress-bar" style="width: 20%"></div>
+                                                </div>
+                                                <span class="progress-description">
+                                                    You are weak in:<br />
+                                                    Topic Name<br />
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card-body row">
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="info-box bg-success">
+                                            <span class="info-box-icon"><i class="fa fa-balance-scale-left"></i></span>
+
+                                            <div class="info-box-content">
+                                                <span class="info-box-text">Relative Strength</span>
+                                                <span class="info-box-number">Percentile 80</span>
+
+                                                <div class="progress">
+                                                    <div class="progress-bar" style="width: 80%"></div>
+                                                </div>
+                                                <span class="progress-description">
+                                                    You are relatively good in:<br />
+                                                    Topic Name<br />
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="info-box bg-warning">
+                                            <span class="info-box-icon"><i class="fa fa-balance-scale"></i></span>
+
+                                            <div class="info-box-content">
+                                                <span class="info-box-text">Relative Neutral</span>
+                                                <span class="info-box-number">Percentile 50</span>
+
+                                                <div class="progress">
+                                                    <div class="progress-bar" style="width: 50%"></div>
+                                                </div>
+                                                <span class="progress-description">
+                                                    You are relatively average in:<br />
+                                                    Topic Name<br />
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="info-box bg-danger">
+                                            <span class="info-box-icon"><i class="fa fa-balance-scale-right"></i></span>
+
+                                            <div class="info-box-content">
+                                                <span class="info-box-text">Relative Weakness</span>
+                                                <span class="info-box-number">Percentile 20</span>
+
+                                                <div class="progress">
+                                                    <div class="progress-bar" style="width: 20%"></div>
+                                                </div>
+                                                <span class="progress-description">
+                                                    You are relatively weak in:<br />
+                                                    Topic Name<br />
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer text-center">
+                                    <button type="button" class="btn btn-default btn-sm" data-toggle="modal"
+                                        data-target="#modal-default">
+                                        <small>How is that computed?</small>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div id="comparison" class="card">
-                        <div class="card-header">
-                            <h5 class="m-0 text-center">Classmate Comparison</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="chart">
-                                <div class="chartjs-size-monitor">
-                                    <div class="chartjs-size-monitor-expand">
-                                        <div class=""></div>
-                                    </div>
-                                    <div class="chartjs-size-monitor-shrink">
-                                        <div class=""></div>
+                    <div id="comparison" class="row">
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="m-0 text-center">Classmate Comparison</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart">
+                                        <div class="chartjs-size-monitor">
+                                            <div class="chartjs-size-monitor-expand">
+                                                <div class=""></div>
+                                            </div>
+                                            <div class="chartjs-size-monitor-shrink">
+                                                <div class=""></div>
+                                            </div>
+                                        </div>
+                                        <canvas id="classmateComparisonChart"
+                                            style="min-height: 20rem;max-height: 20rem; min-width: 100%; display: block;"
+                                            class="chartjs-render-monitor">
+                                        </canvas>
                                     </div>
                                 </div>
-                                <canvas id="lineChart"
-                                    style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 569px;"
-                                    width="1138" height="500" class="chartjs-render-monitor">
-                                </canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="examinationTimeline" class="row">
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="m-0 text-center">Examination Timeline</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart">
+                                        <div class="chartjs-size-monitor">
+                                            <div class="chartjs-size-monitor-expand">
+                                                <div class=""></div>
+                                            </div>
+                                            <div class="chartjs-size-monitor-shrink">
+                                                <div class=""></div>
+                                            </div>
+                                        </div>
+                                        <canvas id="examinationTimelineChart"
+                                            style="min-height: 20rem;max-height: 20rem; min-width: 100%; display: block;"
+                                            class="chartjs-render-monitor">
+                                        </canvas>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- /.col-md-6 -->
+                <!-- Answer Key -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="m-0 text-center">Response Evaluation</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="questions" class="row"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <!-- /.row -->
-            <hr />
-            <div id="questions" class="row"></div>
+
         </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->
@@ -254,7 +408,7 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
                 <div class="modal-body">
                     <p>Strength and weakness are derived by computing the percentage of
                         correct/incorrect response for questions belonging to any given topic with thresholds of
-                        80% and 40% respectively.</p>
+                        80% and 40% respectively. The computation is solely on basis of the student's response.</p>
                 </div>
             </div>
             <!-- /.modal-content -->
