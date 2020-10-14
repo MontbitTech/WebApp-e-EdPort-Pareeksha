@@ -107,8 +107,6 @@ var questions = [
     },
 ]
 
-var myLog = []
-
 var myResponse = [
     { id: 4, response: 0 },
     { id: 6, response: 1234 },
@@ -121,6 +119,8 @@ var myResponse = [
     { id: 20, response: 3 },
     { id: 22, response: 4 }
 ]
+
+var myLog = []
 
 var otherResponse = [
     {
@@ -145,7 +145,18 @@ var otherResponse = [
     },
 ]
 
-var correctResponse = ['0', '1234', '2', '2', '3', '4', '0', '1', '2', '3']
+var correctResponse = [
+    { id: 4, response: 0 },
+    { id: 6, response: 134 },
+    { id: 8, response: 2 },
+    { id: 10, response: 2 },
+    { id: 12, response: 4 },
+    { id: 14, response: 0 },
+    { id: 16, response: 123 },
+    { id: 18, response: 2 },
+    { id: 20, response: 3 },
+    { id: 22, response: 4 }
+]
 
 // Global Variables
 var qc = 0
@@ -269,28 +280,25 @@ function checkValidUser(email) {
 function displayQuestion(q) {
     ++qc
     oc = 0
-    $('#questions').append('<div id="question' + qc + '" class="col-lg-12"><div id="q' + qc + '" class="card collapsed-card"></div></div>')
-    $('#q' + qc).append('<div class="card-header"><h3 class="card-title">Question ' + qc + '</h3><div class="card-tools"><button type="button" class="btn btn-tool" data-card-widget="collapse"><i class= "fas fa-plus" ></i ></button ></div></div>')
-    $('#q' + qc).append('<div id="q' + qc + '_body" class="card-body"><h6 class= "card-title">' + q.question + '</h6><br/><br/></div>')
-    q.options.forEach(populateOptions)
-    $('#questionList').append('<li class="nav-item"><a href="#question' + qc + '" class="nav-link"><i id="question' + qc + '_button" class="far fa-circle text-warning fa-sm nav-icon"></i><p>&nbsp;Question ' + qc + '</p></a></li>')
-    $('#q' + qc).append('<div class="card-footer text-secondary"><span class="font-italic font-weight-light">' + q.topic + '</span><span class="float-right font-weight-normal">Marks: ' + q.marks + '</span></div>')
-}
-
-// Add option for each option in question
-function populateOptions(o) {
-    ++oc
-    $('#q' + qc + '_body').append('<div class="form-check"><input class= "form-check-input" type="checkbox" disabled id="o_' + qc + '_' + oc + '" ><label class="form-check-label">' + o + '</label></div >')
+    $('#questions').append('<div id="question' + q.id + '" class="col-lg-12"><div id="q' + q.id + '" class="card collapsed-card"></div></div>')
+    $('#q' + q.id).append('<div class="card-header"><h3 class="card-title">Question ' + qc + '</h3><div class="card-tools"><button type="button" class="btn btn-tool" data-card-widget="collapse"><i class= "fas fa-plus" ></i ></button ></div></div>')
+    $('#q' + q.id).append('<div id="q' + q.id + '_body" class="card-body"><h6 class= "card-title">' + q.question + '</h6><br/><br/></div>')
+    for (const o of q.options) {
+        ++oc
+        $('#q' + q.id + '_body').append('<div class="form-check"><input class= "form-check-input" type="checkbox" id="o_' + q.id + '_' + oc + '" ><label class="form-check-label">' + o + '</label></div >')
+    }
+    $('#questionList').append('<li class="nav-item"><a href="#question' + q.id + '" class="nav-link"><i id="question' + q.id + '_button" class="far fa-circle text-warning fa-sm nav-icon"></i><p>&nbsp;Question ' + q.id + '</p></a></li>')
+    $('#q' + q.id).append('<div class="card-footer text-secondary"><span class="font-italic font-weight-light">' + q.topic + '</span><span class="float-right font-weight-normal">Marks: ' + q.marks + '</span></div>')
 }
 
 // Add user response if present
 function displayUserResponse(r) {
-    for (var i = 0; i < r.length; i++) {
-        populateUserResponse(i + 1, r[i].toString());
+    for (var i = 0; i < r.response.toString().length; i++) {
+        populateUserResponse(r.id, r.response.toString()[i])
     }
 }
 
-// Check mark the option selected by user
+// Check mark the option if selected previously
 function populateUserResponse(q, c) {
     for (var i = 0; i < c.length; i++) {
         if (c[i] !== '0') { document.getElementById('o_' + q + '_' + c[i]).checked = true }
@@ -299,12 +307,12 @@ function populateUserResponse(q, c) {
 
 // Add correct response
 function displayCorrectResponse(r) {
-    for (var i = 0; i < r.length; i++) {
-        populateCorrectResponse(i + 1, r[i].toString());
+    for (var i = 0; i < r.response.toString().length; i++) {
+        populateCorrectResponse(r.id, r.response.toString()[i])
     }
 }
 
-// Check mark the correct option
+// TODO Check mark the correct option
 function populateCorrectResponse(q, c) {
     if (c == myResponse[q - 1]) {
         $('#q' + q).css({ 'background-color': 'rgba(27, 94, 32,0.1)' })
@@ -338,8 +346,8 @@ $(document).ready(function () {
 
     // Load questions and previous responses
     questions.forEach(displayQuestion)
-    displayUserResponse(myResponse)
-    displayCorrectResponse(correctResponse)
+    myResponse.forEach(displayUserResponse)
+    correctResponse.forEach(displayCorrectResponse)
 
     analysePerformance()
     initChart()

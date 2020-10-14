@@ -447,9 +447,10 @@ async function startExam() {
     saveResponse()
 
     // UI feedback & Enhancement
-    $('html, body').animate({ scrollTop: $("#question1").offset().top }, 1000)
+    $('html, body').animate({ scrollTop: $("#guidelineEnd").offset().top }, 1000)
     Toast.fire({ icon: 'success', title: 'Proctor joined' })
     $('#toggle_sidebar').addClass('text-info')
+    $('#proctor').show()
     $('#guidelines_button').removeClass('fa-circle').addClass('text-info fa-check-circle')
 }
 
@@ -708,4 +709,5 @@ function fillData() {
 $(document).ready(function () {
     fillData()
     gatherUserDetail()
+    $('#proctor').hide()
 })
