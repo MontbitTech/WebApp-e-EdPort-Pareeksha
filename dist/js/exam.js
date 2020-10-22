@@ -13,6 +13,7 @@ var examProperties = {
     blockKeyboard: true,
     blockRightClick: true,
     timeBound: true,
+    timeDuration: 120,
 }
 
 var questions = [
@@ -151,6 +152,7 @@ var blockRightClick = true
 // Time bound exam
 var timeBound = true
 var timeOver = false
+var timeDuration = 0
 
 // System compatibility test
 var systemIncompatible = false
@@ -248,6 +250,7 @@ function setEnvironment() {
     blockKeyboard = examProperties.blockKeyboard
     blockRightClick = examProperties.blockRightClick
     timeBound = examProperties.timeBound
+    timeDuration = examProperties.timeDuration
 }
 
 // Switch to full screen if defined by examiner
@@ -322,8 +325,8 @@ function trackRightClick() {
 }
 
 // Track Time
-function startTimer(hh = 3, mm = 0, ss = 0) {
-    let secondsRemaining = hh * 60 * 60 + mm * 60 + ss;
+function startTimer(timeDuration) {
+    let secondsRemaining = timeDuration * 60;
     var timerInterval = setInterval(function () {
         if (!examPaused) {
             var hh = Math.floor(secondsRemaining / 60 / 60) % 24
@@ -441,7 +444,7 @@ async function startExam() {
 
     // Start timer
     examPaused = false
-    if (timeBound) { startTimer() }
+    if (timeBound) { startTimer(timeDuration) }
 
     //Auto-save user response
     saveResponse()

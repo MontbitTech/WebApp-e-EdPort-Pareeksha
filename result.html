@@ -151,33 +151,28 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
                     <div id="summary" class="row">
                         <div class="col-lg-12">
                             <div class="card">
+                                <div class="ribbon-wrapper ribbon-lg">
+                                    <div class="ribbon bg-warning">
+                                        Summary
+                                    </div>
+                                </div>
                                 <div class="card-header">
-                                    <h5 class="m-0 text-center">Performance Summary</h5>
+                                    <h5 class="m-0 text-center">My Performance</h5>
                                 </div>
                                 <div class="card-body p-0">
                                     <table class="table table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th>Topic</th>
-                                                <th style="width: 40px">Score</th>
-                                            </tr>
-                                        </thead>
                                         <tbody>
                                             <tr>
-                                                <td>Your Score</td>
+                                                <td>My Score</td>
                                                 <td><span class="badge bg-success">70%</span></td>
                                             </tr>
                                             <tr>
-                                                <td>Batch Average Score</td>
+                                                <td>My Percentile</td>
                                                 <td><span class="badge bg-danger">35%</span></td>
                                             </tr>
                                             <tr>
-                                                <td>Class Average Score</td>
+                                                <td>Class Avg Score</td>
                                                 <td><span class="badge bg-warning">60%</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Examination Average Score</td>
-                                                <td><span class="badge bg-primary">55%</span></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -207,14 +202,10 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
 
                                             <div class="info-box-content">
                                                 <span class="info-box-text">Strength</span>
-                                                <span class="info-box-number">80% average score</span>
+                                                <span class="info-box-number text-sm">&gt; 70% average score</span>
 
-                                                <div class="progress">
-                                                    <div class="progress-bar" style="width: 80%"></div>
-                                                </div>
-                                                <span class="progress-description">
+                                                <span id="myStrength" class="progress-description text-sm">
                                                     You are good in:<br />
-                                                    Topic Name<br />
                                                 </span>
                                             </div>
                                         </div>
@@ -225,14 +216,10 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
 
                                             <div class="info-box-content">
                                                 <span class="info-box-text">Neutral</span>
-                                                <span class="info-box-number">50% average score</span>
+                                                <span class="info-box-number text-sm">70% to 30% average score</span>
 
-                                                <div class="progress">
-                                                    <div class="progress-bar" style="width: 50%"></div>
-                                                </div>
-                                                <span class="progress-description">
+                                                <span id="myNeutral" class="progress-description text-sm">
                                                     You are average in:<br />
-                                                    Topic Name<br />
                                                 </span>
                                             </div>
                                         </div>
@@ -243,14 +230,10 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
 
                                             <div class="info-box-content">
                                                 <span class="info-box-text">Weakness</span>
-                                                <span class="info-box-number">20% average score</span>
+                                                <span class="info-box-number text-sm">&lt; 30% average score</span>
 
-                                                <div class="progress">
-                                                    <div class="progress-bar" style="width: 20%"></div>
-                                                </div>
-                                                <span class="progress-description">
+                                                <span id="myWeakness" class="progress-description text-sm">
                                                     You are weak in:<br />
-                                                    Topic Name<br />
                                                 </span>
                                             </div>
                                         </div>
@@ -264,12 +247,9 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
 
                                             <div class="info-box-content">
                                                 <span class="info-box-text">Relative Strength</span>
-                                                <span class="info-box-number">Percentile 80</span>
+                                                <span class="info-box-number text-sm">&gt; 80 Percentile</span>
 
-                                                <div class="progress">
-                                                    <div class="progress-bar" style="width: 80%"></div>
-                                                </div>
-                                                <span class="progress-description">
+                                                <span class="progress-description text-sm">
                                                     You are relatively good in:<br />
                                                     Topic Name<br />
                                                 </span>
@@ -282,12 +262,9 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
 
                                             <div class="info-box-content">
                                                 <span class="info-box-text">Relative Neutral</span>
-                                                <span class="info-box-number">Percentile 50</span>
+                                                <span class="info-box-number text-sm">70 to 30 Percentile</span>
 
-                                                <div class="progress">
-                                                    <div class="progress-bar" style="width: 50%"></div>
-                                                </div>
-                                                <span class="progress-description">
+                                                <span class="progress-description text-sm">
                                                     You are relatively average in:<br />
                                                     Topic Name<br />
                                                 </span>
@@ -300,12 +277,9 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
 
                                             <div class="info-box-content">
                                                 <span class="info-box-text">Relative Weakness</span>
-                                                <span class="info-box-number">Percentile 20</span>
+                                                <span class="info-box-number text-sm">&lt; 20 Percentile</span>
 
-                                                <div class="progress">
-                                                    <div class="progress-bar" style="width: 20%"></div>
-                                                </div>
-                                                <span class="progress-description">
+                                                <span class="progress-description text-sm">
                                                     You are relatively weak in:<br />
                                                     Topic Name<br />
                                                 </span>
@@ -330,20 +304,7 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
                                     <h5 class="m-0 text-center">Classmate Comparison</h5>
                                 </div>
                                 <div class="card-body">
-                                    <div class="chart">
-                                        <div class="chartjs-size-monitor">
-                                            <div class="chartjs-size-monitor-expand">
-                                                <div class=""></div>
-                                            </div>
-                                            <div class="chartjs-size-monitor-shrink">
-                                                <div class=""></div>
-                                            </div>
-                                        </div>
-                                        <canvas id="classmateComparisonChart"
-                                            style="min-height: 20rem;max-height: 20rem; min-width: 100%; display: block;"
-                                            class="chartjs-render-monitor">
-                                        </canvas>
-                                    </div>
+
                                 </div>
                             </div>
                         </div>
@@ -356,20 +317,7 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
                                     <h5 class="m-0 text-center">Examination Timeline</h5>
                                 </div>
                                 <div class="card-body">
-                                    <div class="chart">
-                                        <div class="chartjs-size-monitor">
-                                            <div class="chartjs-size-monitor-expand">
-                                                <div class=""></div>
-                                            </div>
-                                            <div class="chartjs-size-monitor-shrink">
-                                                <div class=""></div>
-                                            </div>
-                                        </div>
-                                        <canvas id="examinationTimelineChart"
-                                            style="min-height: 20rem;max-height: 20rem; min-width: 100%; display: block;"
-                                            class="chartjs-render-monitor">
-                                        </canvas>
-                                    </div>
+
                                 </div>
                             </div>
                         </div>
