@@ -157,25 +157,26 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
                                     </div>
                                 </div>
                                 <div class="card-header">
-                                    <h5 class="m-0 text-center">My Performance</h5>
+                                    <h5 class="m-0 text-center">Examination Result</h5>
                                 </div>
                                 <div class="card-body p-0">
-                                    <table class="table table-sm">
+                                    <table class="table table-sm table-bordered">
                                         <tbody>
                                             <tr>
                                                 <td>My Score</td>
-                                                <td><span class="badge bg-success">70%</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td>My Percentile</td>
-                                                <td><span class="badge bg-danger">35%</span></td>
+                                                <td><span id="myScore"></span></td>
                                             </tr>
                                             <tr>
                                                 <td>Class Avg Score</td>
-                                                <td><span class="badge bg-warning">60%</span></td>
+                                                <td><span id="classAvgScore"></span></td>
                                             </tr>
                                         </tbody>
                                     </table>
+                                    <p class="text-sm p-1">
+                                        This exam was conducted on <span id="examDate">00/00/0000</span> for the subject
+                                        <span id="examSubject">SampleSubject</span> covering the following topics:<br />
+                                        <span id="examTopics"></span><br />
+                                    </p>
                                 </div>
                                 <div class="card-footer text-center">
                                     <div class="fb-share-button"
@@ -201,7 +202,7 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
                                             <span class="info-box-icon"><i class="fa fa-balance-scale-left"></i></span>
 
                                             <div class="info-box-content">
-                                                <span class="info-box-text">Strength</span>
+                                                <span class="info-box-text">My Strength</span>
                                                 <span class="info-box-number text-sm">&gt; 70% average score</span>
 
                                                 <span id="myStrength" class="progress-description text-sm">
@@ -215,7 +216,7 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
                                             <span class="info-box-icon"><i class="fa fa-balance-scale"></i></span>
 
                                             <div class="info-box-content">
-                                                <span class="info-box-text">Neutral</span>
+                                                <span class="info-box-text">My Neutral</span>
                                                 <span class="info-box-number text-sm">70% to 30% average score</span>
 
                                                 <span id="myNeutral" class="progress-description text-sm">
@@ -229,7 +230,7 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
                                             <span class="info-box-icon"><i class="fa fa-balance-scale-right"></i></span>
 
                                             <div class="info-box-content">
-                                                <span class="info-box-text">Weakness</span>
+                                                <span class="info-box-text">My Weakness</span>
                                                 <span class="info-box-number text-sm">&lt; 30% average score</span>
 
                                                 <span id="myWeakness" class="progress-description text-sm">
@@ -239,19 +240,17 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="card-body row">
                                     <div class="col-md-4 col-sm-6">
                                         <div class="info-box bg-success">
                                             <span class="info-box-icon"><i class="fa fa-balance-scale-left"></i></span>
 
                                             <div class="info-box-content">
-                                                <span class="info-box-text">Relative Strength</span>
-                                                <span class="info-box-number text-sm">&gt; 80 Percentile</span>
+                                                <span class="info-box-text">Class Strength</span>
+                                                <span class="info-box-number text-sm">&gt; 70% average score</span>
 
-                                                <span class="progress-description text-sm">
-                                                    You are relatively good in:<br />
-                                                    Topic Name<br />
+                                                <span id="classStrength" class="progress-description text-sm">
+                                                    The class is good in:<br />
                                                 </span>
                                             </div>
                                         </div>
@@ -261,12 +260,11 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
                                             <span class="info-box-icon"><i class="fa fa-balance-scale"></i></span>
 
                                             <div class="info-box-content">
-                                                <span class="info-box-text">Relative Neutral</span>
-                                                <span class="info-box-number text-sm">70 to 30 Percentile</span>
+                                                <span class="info-box-text">Class Neutral</span>
+                                                <span class="info-box-number text-sm">70% to 30% average score</span>
 
-                                                <span class="progress-description text-sm">
-                                                    You are relatively average in:<br />
-                                                    Topic Name<br />
+                                                <span id="classNeutral" class="progress-description text-sm">
+                                                    The class is average in:<br />
                                                 </span>
                                             </div>
                                         </div>
@@ -276,12 +274,55 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
                                             <span class="info-box-icon"><i class="fa fa-balance-scale-right"></i></span>
 
                                             <div class="info-box-content">
-                                                <span class="info-box-text">Relative Weakness</span>
+                                                <span class="info-box-text">Class Weakness</span>
+                                                <span class="info-box-number text-sm">&lt; 30% average score</span>
+
+                                                <span id="classWeakness" class="progress-description text-sm">
+                                                    The class is weak in:<br />
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body row">
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="info-box bg-success">
+                                            <span class="info-box-icon"><i class="fa fa-balance-scale-left"></i></span>
+
+                                            <div class="info-box-content">
+                                                <span class="info-box-text">My Relative Strength</span>
+                                                <span class="info-box-number text-sm">&gt; 80 Percentile</span>
+
+                                                <span id="myRelativeStrength" class="progress-description text-sm">
+                                                    You are relatively good in:<br />
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="info-box bg-warning">
+                                            <span class="info-box-icon"><i class="fa fa-balance-scale"></i></span>
+
+                                            <div class="info-box-content">
+                                                <span class="info-box-text">My Relative Neutral</span>
+                                                <span class="info-box-number text-sm">70 to 30 Percentile</span>
+
+                                                <span id="myRelativeNeutral" class="progress-description text-sm">
+                                                    You are relatively average in:<br />
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="info-box bg-danger">
+                                            <span class="info-box-icon"><i class="fa fa-balance-scale-right"></i></span>
+
+                                            <div class="info-box-content">
+                                                <span class="info-box-text">My Relative Weakness</span>
                                                 <span class="info-box-number text-sm">&lt; 20 Percentile</span>
 
-                                                <span class="progress-description text-sm">
+                                                <span id="myRelativeWeakness" class="progress-description text-sm">
                                                     You are relatively weak in:<br />
-                                                    Topic Name<br />
                                                 </span>
                                             </div>
                                         </div>
@@ -356,7 +397,7 @@ Refer https://www.youtube.com/watch?v=CVClHLwv-4I for face-api tutorial.
                 <div class="modal-body">
                     <p>Strength and weakness are derived by computing the percentage of
                         correct/incorrect response for questions belonging to any given topic with thresholds of
-                        80% and 40% respectively. The computation is solely on basis of the student's response.</p>
+                        70% and 30% respectively. The computation is solely on basis of the student's response.</p>
                 </div>
             </div>
             <!-- /.modal-content -->

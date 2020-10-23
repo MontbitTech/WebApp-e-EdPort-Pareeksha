@@ -6,7 +6,15 @@ var examID = ''
 var myPerTopicSummary = []
 var classPerTopicSummary = []
 var myMarks = 0
-var maxMarks = 0
+var myMaxMarks = 0
+var classMarks = 0
+var classMaxMarks = 0
+var myStrength = new Set()
+var myNeutral = new Set()
+var myWeakness = new Set()
+var classStrength = new Set()
+var classNeutral = new Set()
+var classWeakness = new Set()
 
 // Dummy Data (Replace by API)
 var examProperties = {
@@ -24,6 +32,8 @@ var examProperties = {
     blockRightClick: true,
     timeBound: true,
     timeDuration: 3600,
+    examDate: '22/10/2020',
+    examSubject: 'Cyber Security'
 }
 
 var questions = [
@@ -126,7 +136,7 @@ var myLog = [
 
 ]
 
-var otherResponse = [
+var classResponse = [
     {
         user: 'aman.rai@gmail.com',
         response: [
@@ -202,6 +212,9 @@ var correctResponse = [
     { id: 22, response: 234, reason: '' }
 ]
 
+// Setting Global Variables
+var classUserResponse = []
+
 // CORE RESULT SETUP
 
 // Fetch data from URL
@@ -250,7 +263,6 @@ function checkValidUser(email) {
 // Add question for each question in exam
 function displayQuestion(q, i) {
     oc = 0
-    maxMarks += q.marks
     $('#questions').append('<div id="question' + q.id + '" class="col-lg-12"><div id="q' + q.id + '" class="card collapsed-card"></div></div>')
     $('#q' + q.id).append('<div class="card-header"><h3 class="card-title">Question ' + (i + 1) + '</h3><div class="card-tools"><button type="button" class="btn btn-tool" data-card-widget="collapse"><i class= "fas fa-plus" ></i ></button ></div></div>')
     $('#q' + q.id).append('<div id="q' + q.id + '_body" class="card-body"><h6 class= "card-title">' + q.question + '</h6><br/><br/></div>')
@@ -279,10 +291,7 @@ function populateUserResponse(q, c) {
 // Add correct response
 function displayCorrectResponse(r, i) {
     isCorrect = false
-    if (myResponse[i].response.toString() == r.response.toString()) {
-        isCorrect = true
-        myMarks += questions[i].marks
-    }
+    if (myResponse[i].response.toString() == r.response.toString()) { isCorrect = true }
     for (var i = 0; i < r.response.toString().length; i++) { populateCorrectResponse(r.id, r.response.toString()[i], isCorrect) }
     if (r.reason != '') { $('#q' + r.id + '_body').append('<hr/>Explanation:<br/>').append('<small><i>' + r.reason + '</i></small>') }
 }
@@ -305,7 +314,55 @@ function populateCorrectResponse(q, c, isCorrect) {
     }
 }
 
-// ADVANCED RESULT ANALYSIS
+
+// ADVANCED RESULT ANALYSIS - CLASS
+
+// 
+function createClassPerTopicSummary(q, i) {
+    isCorrect = false
+    if (classUserResponse[i].response.toString() == correctResponse[i].response.toString()) {
+        isCorrect = true
+    }
+    if (q.topic in classPerTopicSummary) {
+        classPerTopicSummary[q.topic]['count'] += 1
+        classPerTopicSummary[q.topic]['marksT'] += q.marks
+        classMaxMarks += q.marks
+        if (isCorrect) { classPerTopicSummary[q.topic]['marksO'] += q.marks; classMarks += q.marks }
+        classPerTopicSummary[q.topic]['score'] = classPerTopicSummary[q.topic]['marksO'] / classPerTopicSummary[q.topic]['marksT']
+    }
+    else {
+        classPerTopicSummary[q.topic] = []
+        classPerTopicSummary[q.topic]['count'] = 1
+        classPerTopicSummary[q.topic]['marksT'] = q.marks
+        classMaxMarks += q.marks
+        if (isCorrect) { classPerTopicSummary[q.topic]['marksO'] = q.marks; classMarks += q.marks }
+        else { classPerTopicSummary[q.topic]['marksO'] = 0 }
+        classPerTopicSummary[q.topic]['score'] = classPerTopicSummary[q.topic]['marksO'] / classPerTopicSummary[q.topic]['marksT']
+    }
+}
+
+//
+function displayClassPerTopicSummary(d, t) {
+    if (d.score > .7) { $('#classStrength').append('<small>' + t + '<br/></small>'); classStrength.add(t) }
+    else if (d.score < .3) { $('#classWeakness').append('<small>' + t + '<br/></small>'); classNeutral.add(t) }
+    else { $('#classNeutral').append('<small>' + t + '<br/></small>'); classWeakness.add(t) }
+    $('#classAvgScore').html(100 * classMarks / classMaxMarks)
+}
+
+// Analyse user's per topic performance
+function analyseClassPerTopicSummary() {
+    for (var i = 0; i < classResponse.length; i++) {
+        classUserResponse = classResponse[i].response
+        questions.forEach(function (question, index) { createClassPerTopicSummary(question, index) })
+    }
+
+    for (var key in classPerTopicSummary) {
+        displayClassPerTopicSummary(classPerTopicSummary[key], key);
+    }
+}
+
+
+// ADVANCED RESULT ANALYSIS - USER
 
 // 
 function createMyPerTopicSummary(q, i) {
@@ -316,14 +373,16 @@ function createMyPerTopicSummary(q, i) {
     if (q.topic in myPerTopicSummary) {
         myPerTopicSummary[q.topic]['count'] += 1
         myPerTopicSummary[q.topic]['marksT'] += q.marks
-        if (isCorrect) { myPerTopicSummary[q.topic]['marksO'] += q.marks }
+        myMaxMarks += q.marks
+        if (isCorrect) { myPerTopicSummary[q.topic]['marksO'] += q.marks; myMarks += q.marks }
         myPerTopicSummary[q.topic]['score'] = myPerTopicSummary[q.topic]['marksO'] / myPerTopicSummary[q.topic]['marksT']
     }
     else {
         myPerTopicSummary[q.topic] = []
         myPerTopicSummary[q.topic]['count'] = 1
         myPerTopicSummary[q.topic]['marksT'] = q.marks
-        if (isCorrect) { myPerTopicSummary[q.topic]['marksO'] = q.marks }
+        myMaxMarks += q.marks
+        if (isCorrect) { myPerTopicSummary[q.topic]['marksO'] = q.marks; myMarks += q.marks }
         else { myPerTopicSummary[q.topic]['marksO'] = 0 }
         myPerTopicSummary[q.topic]['score'] = myPerTopicSummary[q.topic]['marksO'] / myPerTopicSummary[q.topic]['marksT']
     }
@@ -331,11 +390,10 @@ function createMyPerTopicSummary(q, i) {
 
 //
 function displayMyPerTopicSummary(d, t) {
-    if (d.score > .7) { $('#myStrength').append('<small>' + t + '<br/></small>') }
-    else if (d.score < .3) { { $('#myWeakness').append('<small>' + t + '<br/></small>') } }
-    else { { $('#myNeutral').append('<small>' + t + '<br/></small>') } }
-    console.log(t)
-    console.log(d)
+    if (d.score > .7) { $('#myStrength').append('<small>' + t + '<br/></small>'); myStrength.add(t) }
+    else if (d.score < .3) { $('#myWeakness').append('<small>' + t + '<br/></small>'); myNeutral.add(t) }
+    else { $('#myNeutral').append('<small>' + t + '<br/></small>'); myWeakness.add(t) }
+    $('#examTopics').append(' ' + t + ',')
 }
 
 // Analyse user's per topic performance
@@ -344,6 +402,15 @@ function analyseMyPerTopicSummary() {
     for (var key in myPerTopicSummary) {
         displayMyPerTopicSummary(myPerTopicSummary[key], key);
     }
+}
+
+
+function displayAdditionalData() {
+    $('#myScore').html(100 * myMarks / myMaxMarks)
+    $('#examDate').html(examProperties.examDate)
+    $('#examSubject').html(examProperties.examSubject)
+    console.log(myStrength)
+
 }
 
 // Document on Ready
@@ -357,7 +424,7 @@ $(document).ready(function () {
     correctResponse.forEach(function (response, index) { displayCorrectResponse(response, index) })
 
     analyseMyPerTopicSummary()
+    analyseClassPerTopicSummary()
+    displayAdditionalData()
 
-    console.log(myPerTopicSummary)
-    console.log(classPerTopicSummary)
 })
