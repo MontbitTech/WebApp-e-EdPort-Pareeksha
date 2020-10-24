@@ -409,8 +409,9 @@ function displayAdditionalData() {
     $('#myScore').html(100 * myMarks / myMaxMarks)
     $('#examDate').html(examProperties.examDate)
     $('#examSubject').html(examProperties.examSubject)
-    console.log(myStrength)
-
+    for (value in myStrength) { console.log(value); if (!value in classStrength) { $('#myRelativeStrength').append(value) } }
+    for (value in myNeutral) { console.log(value); if (!value in classNeutral) { $('#myRelativeNeutral').append(value) } }
+    for (value in myWeakness) { console.log(value); if (!value in classWeakness) { $('#myRelativeWeakness').append(value) } }
 }
 
 // Document on Ready
